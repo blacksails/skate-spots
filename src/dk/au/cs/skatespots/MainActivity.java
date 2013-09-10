@@ -29,7 +29,8 @@ public class MainActivity extends Activity {
 	        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 	        // Check if we were successful in obtaining the map.
 	        if (map != null) {
-	        	map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+	        	map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+	        	map.setMyLocationEnabled(true);
 	        }
 	    }
 	}
