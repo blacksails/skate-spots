@@ -1,15 +1,20 @@
 package dk.au.cs.skatespots;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+
 public class MainActivity extends Activity {
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		setUpMapIfNeeded();
 	}
 
 	@Override
@@ -18,5 +23,16 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
+	private void setUpMapIfNeeded() {
+	    if (map == null) {
+	        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+	        // Check if we were successful in obtaining the map.
+	        if (map != null) {
+	        	map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+	        }
+	    }
+	}
 
+	private GoogleMap map;
 }
