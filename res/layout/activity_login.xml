@@ -7,10 +7,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical">
     
-    <EditText android:id="@+id/user_name"
+    <Spinner android:id="@+id/user_name"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/enter_user_name"/>
+        android:layout_height="wrap_content"/>
     <EditText android:id="@+id/password"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -20,4 +19,5 @@
         android:layout_height="wrap_content"
         android:text="@string/button_login"
         android:onClick="login"/>
+    
 </LinearLayout>
