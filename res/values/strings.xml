@@ -4,10 +4,13 @@
     <string name="app_name">Skate Spots</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login">Login to Skate Spots</string>
     <string name="enter_user_name">User name</string>
     <string name="enter_password">Password</string>
     <string name="button_login">Login</string>
+    <string name="create_new_user">Create new user</string>
+    <string name="create_user">Create user</string>
+    <string name="title_activity_create_user">Create new user</string>
+    <string name="display_name">Display name</string>
 
 </resources>

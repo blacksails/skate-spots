@@ -1,13 +1,16 @@
 package dk.au.cs.skatespots;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 
+import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 
 public class MainActivity extends Activity {
+	public static Context c;
 	
 
 	@Override
@@ -15,6 +18,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setUpMapIfNeeded();
+		
+		
 	}
 
 	@Override

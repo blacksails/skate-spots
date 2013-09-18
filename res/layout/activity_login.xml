@@ -20,4 +20,11 @@
         android:text="@string/button_login"
         android:onClick="login"/>
     
+    <Button android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create_new_user"
+        android:onClick="createUser"/>
+    
+    
+    
 </LinearLayout>

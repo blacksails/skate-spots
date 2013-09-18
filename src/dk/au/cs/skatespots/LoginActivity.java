@@ -18,7 +18,7 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		setUpAccountDropDown();
+		setUpAccountDropDown();		
 	}
 
 	@Override
@@ -51,8 +51,17 @@ public class LoginActivity extends Activity {
 		mainActivity();
 	}
 	
+	public void createUser(View view){
+		createUserActivity();
+	}
+	
 	private void mainActivity() {
 		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
+	
+	private void createUserActivity() {
+		Intent intent = new Intent(this, CreateUserActivity.class);
 		startActivity(intent);
 	}
 
