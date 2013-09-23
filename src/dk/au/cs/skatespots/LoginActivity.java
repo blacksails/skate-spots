@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity {
 
@@ -38,7 +40,18 @@ public class LoginActivity extends Activity {
 		}
 		
 		if (accountStrings.isEmpty()) {
-			// Lav en dialog som siger at man skal logge ind på en google konto
+
+			Context context = getApplicationContext();
+			CharSequence text = "Please login with a google account on this device";
+			int duration = Toast.LENGTH_LONG;
+
+			Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+		
+		
+		
+		
+		
 		} else {
 			Spinner user_name = (Spinner) findViewById(R.id.user_name);
 			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accountStrings);
