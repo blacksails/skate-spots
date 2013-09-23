@@ -38,7 +38,7 @@ public class CreateUserActivity extends Activity {
 		}
 		
 		if (accountStrings.isEmpty()) {
-			// Lav en dialog som siger at man skal have en google konto
+			// Lav en dialog som siger at man skal logge ind på en google konto
 		} else {
 			Spinner user_name = (Spinner) findViewById(R.id.user_name);
 			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accountStrings);
