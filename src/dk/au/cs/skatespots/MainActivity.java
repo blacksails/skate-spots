@@ -11,8 +11,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends Activity implements ConnectionCallbacks, 
 															  OnConnectionFailedListener 
@@ -46,8 +49,9 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 	        // Check if we were successful in obtaining the map.
 	        if (map != null) {
 	        	map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-	        	//map.setMyLocationEnabled(true);
-	        	//Test
+	        
+	        	 //map.animateCamera(CameraUpdateFactory.zoomIn()); //Zooms in
+	        	 //map.setMyLocationEnabled(true);
 	        }
 	    }
 	}
@@ -56,16 +60,23 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 	@Override
 	public void onConnected(Bundle arg0) {
 		location = locationClient.getLastLocation();
-		String currentCoordinates = location.toString();
 		
+		//Zooms in on our current position
+		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+    	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+    	map.animateCamera(cameraUpdate);
 		
 		//Adds a toast that pops up with our current coordinates once connected.
+    	String currentCoordinates = location.toString();
 		Context context = getApplicationContext();
 		CharSequence text = currentCoordinates;
 		int duration = Toast.LENGTH_LONG;
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
+		
+		
+		
 		
 	}
 
