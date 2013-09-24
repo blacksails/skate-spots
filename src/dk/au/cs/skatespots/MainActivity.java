@@ -11,6 +11,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,9 +19,10 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends Activity implements ConnectionCallbacks, 
-													  OnConnectionFailedListener 
+													  OnConnectionFailedListener,
+													  LocationListener
 													  //OnAddGeofencesResultListener 
-{
+													  {
 	LocationClient locationClient;
 	private GoogleMap map;
 	private Location location;	
@@ -33,7 +35,6 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 		setUpMapIfNeeded();
 		locationClient = new LocationClient(this, this, this);
 		locationClient.connect();
-
 	}
 
 	@Override
@@ -74,10 +75,6 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
-
-
-
-
 	}
 
 	@Override
@@ -90,5 +87,12 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 	public void onConnectionFailed(ConnectionResult arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onLocationChanged(Location arg0) {
+		//What to do when the users current position is changed.
+		// TODO Auto-generated method stub
+		
 	}
 }
