@@ -70,7 +70,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 		//Adds a marker of our current position to our map.
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		map.addMarker(new MarkerOptions()
-        .position(new LatLng(0, 0))
+        .position(latLng)
         .title(LoginActivity.selectedUser));
 
 		//Adds a toast that pops up with our current coordinates once connected.
@@ -97,7 +97,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 
 	@Override
 	public void onLocationChanged(Location arg0) {
-		//What to do when the users current position is changed.
+		// What to do when the users current position is changed.
 		// TODO Auto-generated method stub
 		
 	}

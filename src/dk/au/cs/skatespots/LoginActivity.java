@@ -91,11 +91,9 @@ public class LoginActivity extends Activity {
 	}
 
 
-	
-
-
 	public void login(View view) {
-		Spinner user_name = (Spinner) findViewById(R.id.user_name);
+		mainActivity();
+		/*Spinner user_name = (Spinner) findViewById(R.id.user_name);
 		selectedUser = user_name.getSelectedItem().toString();
 		EditText password = (EditText) findViewById(R.id.password);
 		String uePassword = password.getText().toString();
@@ -128,7 +126,7 @@ public class LoginActivity extends Activity {
 			}
 		};	
 
-		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
+		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);*/
 	}
 
 	public void createUser(View view){
