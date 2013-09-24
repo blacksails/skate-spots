@@ -15,10 +15,15 @@ public class SkateSpotsHttpClient {
 	private static final String BASE_URL = "http://bufo.avalonia.dk:11337";
 	private static AsyncHttpClient client = new AsyncHttpClient();
 
-	public static void post(Context context, JsonObject jsonobj, AsyncHttpResponseHandler responseHandler) throws UnsupportedEncodingException {
-		String bodyAsJson = jsonobj.toString();
-		ByteArrayEntity entity = new ByteArrayEntity(bodyAsJson.getBytes("UTF-8"));
-		client.post(context, BASE_URL, entity, "application/json", responseHandler);
+	public static void post(Context context, JsonObject jsonobj,
+			AsyncHttpResponseHandler responseHandler) {
+		try {
+			String bodyAsJson = jsonobj.toString();
+			ByteArrayEntity entity = new ByteArrayEntity(bodyAsJson.getBytes("UTF-8"));
+			client.post(context, BASE_URL, entity, "application/json", responseHandler);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
