@@ -63,16 +63,7 @@ public class LoginActivity extends Activity {
             alertDialog.setCancelable(false);
             
             AlertDialog dialog = alertDialog.create();
-            
-            //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-                  {            
-                      @Override
-                      public void onClick(View v)
-                      {
-                    	  startActivity(new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT));
-                      }
-                  });
+
             
             alertDialog.setPositiveButton("Redirect me!", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {	
@@ -95,6 +86,7 @@ public class LoginActivity extends Activity {
                       @Override
                       public void onClick(View v)
                       {
+                    	  startActivity(new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT));
                       }
                   });
 		}
