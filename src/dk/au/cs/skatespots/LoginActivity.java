@@ -59,23 +59,46 @@ public class LoginActivity extends Activity {
                 
             alertDialog.setTitle("You need a google account to login!");
             alertDialog.setMessage("You need to create a google account on your phone in order to create an account. " +
-            		"Click 'redirect me!' to create a google account.");
+            		"Click 'redirect me!' to create a google account. Click 'update' once you added your google account.");
             alertDialog.setCancelable(false);
+            
+            AlertDialog dialog = alertDialog.create();
+            
+            //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+                  {            
+                      @Override
+                      public void onClick(View v)
+                      {
+                    	  startActivity(new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT));
+                      }
+                  });
             
             alertDialog.setPositiveButton("Redirect me!", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {	
-                	startActivity(new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT));
+                	//Do  nothing, overwriting later
                 }
             });
            
             alertDialog.setNegativeButton("Update", new DialogInterface.OnClickListener() {
                  public void onClick(DialogInterface dialog, int which) {
+                	 
                 	setUpAccountDropDown();
                 }
             });
 
             alertDialog.show();
+            
+            
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+                  {            
+                      @Override
+                      public void onClick(View v)
+                      {
+                      }
+                  });
 		}
+		
 	  else {
 		Spinner user_name = (Spinner) findViewById(R.id.user_name);
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accountStrings);
