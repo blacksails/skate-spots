@@ -18,12 +18,12 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends Activity implements ConnectionCallbacks, 
-															  OnConnectionFailedListener 
-															  //OnAddGeofencesResultListener 
+													  OnConnectionFailedListener 
+													  //OnAddGeofencesResultListener 
 															  {
 	LocationClient locationClient;
 	private GoogleMap map;
-	private Location location;
+	private Location location;	
 	
 
 	@Override
