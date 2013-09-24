@@ -76,17 +76,9 @@ public class LoginActivity extends Activity {
 					setUpAccountDropDown();
 				}
 			});
-			AlertDialog dialog = alertDialog.create();
 			alertDialog.show();
 
-			dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-			{            
-				@Override
-				public void onClick(View v)
-				{
-					startActivity(new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT));
-				}
-			});
+
 
 		}
 
