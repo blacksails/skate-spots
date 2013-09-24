@@ -2,24 +2,53 @@ package dk.au.cs.skatespots;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
 
-public class MainActivity extends Activity {
-	public static Context c;
+public class MainActivity extends Activity implements ConnectionCallbacks, 
+													  OnConnectionFailedListener 
+													  //OnAddGeofencesResultListener 
+{
+	LocationClient locationClient;
+	private GoogleMap map;
+	private Location location;	
+
+<<<<<<< HEAD
+public class MainActivity extends Activity implements ConnectionCallbacks, 
+															  OnConnectionFailedListener 
+															  //OnAddGeofencesResultListener 
+															  {
+	LocationClient locationClient;
+	private GoogleMap map;
+	private Location location;
 	
+=======
+>>>>>>> origin/branchmarc2
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setUpMapIfNeeded();
+		locationClient = new LocationClient(this, this, this);
+		locationClient.connect();
+<<<<<<< HEAD
 		
-		
+=======
+
+>>>>>>> origin/branchmarc2
 	}
 
 	@Override
@@ -28,17 +57,84 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	private void setUpMapIfNeeded() {
+<<<<<<< HEAD
 	    if (map == null) {
 	        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 	        // Check if we were successful in obtaining the map.
 	        if (map != null) {
 	        	map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-	        	map.setMyLocationEnabled(true);
+	        	//map.setMyLocationEnabled(true);
+	        	//Test
 	        }
 	    }
+=======
+		if (map == null) {
+			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+			// Check if we were successful in obtaining the map.
+			if (map != null) {
+				map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+				//map.animateCamera(CameraUpdateFactory.zoomIn()); //Zooms in
+				//map.setMyLocationEnabled(true);
+			}
+		}
+>>>>>>> origin/branchmarc2
 	}
 
-	private GoogleMap map;
+
+	@Override
+	public void onConnected(Bundle arg0) {
+		location = locationClient.getLastLocation();
+<<<<<<< HEAD
+		String currentCoordinates = location.toString();
+		
+		
+		//Adds a toast that pops up with our current coordinates once connected.
+=======
+
+		//Zooms in on our current position
+		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+		map.animateCamera(cameraUpdate);
+
+		//Adds a toast that pops up with our current coordinates once connected.
+		String currentCoordinates = location.toString();
+>>>>>>> origin/branchmarc2
+		Context context = getApplicationContext();
+		CharSequence text = currentCoordinates;
+		int duration = Toast.LENGTH_LONG;
+
+		Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
+<<<<<<< HEAD
+		
+=======
+
+
+
+
+>>>>>>> origin/branchmarc2
+	}
+
+	@Override
+	public void onDisconnected() {
+		// TODO Auto-generated method stub
+<<<<<<< HEAD
+		
+=======
+
+>>>>>>> origin/branchmarc2
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult arg0) {
+		// TODO Auto-generated method stub
+<<<<<<< HEAD
+		
+=======
+
+>>>>>>> origin/branchmarc2
+	}
 }
