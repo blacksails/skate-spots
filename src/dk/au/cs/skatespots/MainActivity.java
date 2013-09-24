@@ -17,6 +17,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends Activity implements ConnectionCallbacks, 
 													  OnConnectionFailedListener,
@@ -27,6 +28,8 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 	private GoogleMap map;
 	private Location location;	
 
+	
+	//En metode der kan kaldes der hedder map.clear(), der sletter alle nuværende markers.
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +53,6 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 			// Check if we were successful in obtaining the map.
 			if (map != null) {
 				map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-
-				//map.animateCamera(CameraUpdateFactory.zoomIn()); //Zooms in
-				//map.setMyLocationEnabled(true);
 			}
 		}
 	}
@@ -66,6 +66,12 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
 		map.animateCamera(cameraUpdate);
+		
+		//Adds a marker of our current position to our map.
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+		map.addMarker(new MarkerOptions()
+        .position(new LatLng(0, 0))
+        .title(LoginActivity.selectedUser));
 
 		//Adds a toast that pops up with our current coordinates once connected.
 		String currentCoordinates = location.toString();

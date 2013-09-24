@@ -26,6 +26,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 public class LoginActivity extends Activity {
 
 	final Context context = this;
+	public static String selectedUser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,12 +91,12 @@ public class LoginActivity extends Activity {
 	}
 
 
-
+	
 
 
 	public void login(View view) {
 		Spinner user_name = (Spinner) findViewById(R.id.user_name);
-		String selectedUser = user_name.getSelectedItem().toString();
+		selectedUser = user_name.getSelectedItem().toString();
 		EditText password = (EditText) findViewById(R.id.password);
 		String uePassword = password.getText().toString();
 		String ePassword = null;
