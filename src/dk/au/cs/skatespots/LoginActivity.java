@@ -26,7 +26,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 public class LoginActivity extends Activity {
 
 	final Context context = this;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,106 +53,106 @@ public class LoginActivity extends Activity {
 			accountStrings.add(a.name);
 		}
 
+		//Hvis der ingen google accounts eksisterer på telefonen
 		if (accountStrings.isEmpty()) {
-            //AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-                
-            alertDialog.setTitle("You need a google account to login!");
-            alertDialog.setMessage("You need to create a google account on your phone in order to create an account. " +
-            		"Click 'redirect me!' to create a google account. Click 'update' once you added your google account.");
-            alertDialog.setCancelable(false);
-            
-            AlertDialog dialog = alertDialog.create();
+			
+			//AlertDialog oprettes
+			AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+			alertDialog.setTitle("You need a google account to login!");
+			alertDialog.setMessage("You need to create a google account on your phone in order to create an account. " +
+					"Click 'redirect me!' to create a google account. Click 'update' once you added your google account.");
+			alertDialog.setCancelable(false);
 
-            
-            alertDialog.setPositiveButton("Redirect me!", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {	
-                	//Do  nothing, overwriting later
-                }
-            });
-           
-            alertDialog.setNegativeButton("Update", new DialogInterface.OnClickListener() {
-                 public void onClick(DialogInterface dialog, int which) {
-                	 
-                	setUpAccountDropDown();
-                }
-            });
+			//Knap til redirect. Bliver overwritet, så den ikke kan lukkes når den bliver klikket.
+			alertDialog.setPositiveButton("Redirect me!", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {	
+					//Overwrites senere.
+				}
+			});
 
-            alertDialog.show();
-            
-            
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
-                  {            
-                      @Override
-                      public void onClick(View v)
-                      {
-                    	  startActivity(new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT));
-                      }
-                  });
+			//Knap til update. Der bliver tjekket for accounts når denne trykkes.
+			alertDialog.setNegativeButton("Update", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					setUpAccountDropDown();
+				}
+			});
+			AlertDialog dialog = alertDialog.create();
+			alertDialog.show();
+
+			dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+			{            
+				@Override
+				public void onClick(View v)
+				{
+					startActivity(new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT));
+				}
+			});
+
 		}
-		
-	  else {
-		Spinner user_name = (Spinner) findViewById(R.id.user_name);
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accountStrings);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		user_name.setAdapter(dataAdapter);
 
-	}		
-}
+		//Hvis der eksisterer google accounts på telefonen
+		else {
+			Spinner user_name = (Spinner) findViewById(R.id.user_name);
+			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accountStrings);
+			dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			user_name.setAdapter(dataAdapter);
 
-
-
-
-
-public void login(View view) {
-	Spinner user_name = (Spinner) findViewById(R.id.user_name);
-	String selectedUser = user_name.getSelectedItem().toString();
-	EditText password = (EditText) findViewById(R.id.password);
-	String uePassword = password.getText().toString();
-	String ePassword = null;
-
-	try {
-		MessageDigest digest = MessageDigest.getInstance("MD5");
-		digest.update(uePassword.getBytes(), 0, uePassword.length());
-		ePassword = new BigInteger(1, digest.digest()).toString(16);
-	} catch (NoSuchAlgorithmException e) {
-		e.printStackTrace();
+		}		
 	}
 
-	JsonObject obj = new JsonObject();
-	obj.add("key", new JsonPrimitive("ourKey")); // TODO create a key
-	obj.add("type", new JsonPrimitive("login"));
-	obj.add("email", new JsonPrimitive(selectedUser));
-	obj.add("password", new JsonPrimitive(ePassword));
 
-	AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
-		@Override
-		public void onSuccess(String response) {
-			mainActivity();
-			// TODO Set a flag somewhere to mark that we are logged in
+
+
+
+	public void login(View view) {
+		Spinner user_name = (Spinner) findViewById(R.id.user_name);
+		String selectedUser = user_name.getSelectedItem().toString();
+		EditText password = (EditText) findViewById(R.id.password);
+		String uePassword = password.getText().toString();
+		String ePassword = null;
+
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			digest.update(uePassword.getBytes(), 0, uePassword.length());
+			ePassword = new BigInteger(1, digest.digest()).toString(16);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
 		}
-		@Override
-		public void onFailure(Throwable error, String content) {
-			sendFailureMessage(error, content);
-			// TODO Invoke a method that tells the user that either the email or the password was wrong
-		}
-	};	
 
-	SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
-}
+		JsonObject obj = new JsonObject();
+		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a key
+		obj.add("type", new JsonPrimitive("login"));
+		obj.add("email", new JsonPrimitive(selectedUser));
+		obj.add("password", new JsonPrimitive(ePassword));
 
-public void createUser(View view){
-	createUserActivity();
-}
+		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				mainActivity();
+				// TODO Set a flag somewhere to mark that we are logged in
+			}
+			@Override
+			public void onFailure(Throwable error, String content) {
+				sendFailureMessage(error, content);
+				// TODO Invoke a method that tells the user that either the email or the password was wrong
+			}
+		};	
 
-private void mainActivity() {
-	Intent intent = new Intent(this, MainActivity.class);
-	startActivity(intent);
-}
+		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
+	}
 
-private void createUserActivity() {
-	Intent intent = new Intent(this, CreateUserActivity.class);
-	startActivity(intent);
-}
+	public void createUser(View view){
+		createUserActivity();
+	}
+
+	private void mainActivity() {
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
+
+	private void createUserActivity() {
+		Intent intent = new Intent(this, CreateUserActivity.class);
+		startActivity(intent);
+	}
 
 }
