@@ -66,7 +66,7 @@ public class LoginActivity extends Activity {
 			//Knap til redirect. Bliver overwritet, så den ikke kan lukkes når den bliver klikket.
 			alertDialog.setPositiveButton("Redirect me!", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {	
-					//Overwrites senere.
+					context.startActivity(new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT));
 				}
 			});
 
@@ -77,9 +77,6 @@ public class LoginActivity extends Activity {
 				}
 			});
 			alertDialog.show();
-
-
-
 		}
 
 		//Hvis der eksisterer google accounts på telefonen
