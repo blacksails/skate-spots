@@ -64,11 +64,10 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 
 		//Zooms in on our current position
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 20);
 		
 		
 		//Adds a marker of our current position to our map.
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		map.addMarker(new MarkerOptions()
 		.position(latLng)
 		.title(LoginActivity.selectedUser));
