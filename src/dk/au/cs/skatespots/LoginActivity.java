@@ -44,7 +44,6 @@ public class LoginActivity extends Activity {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	private void setUpAccountDropDown() {
 
 		AccountManager am = AccountManager.get(this);
@@ -55,13 +54,21 @@ public class LoginActivity extends Activity {
 		}
 
 		if (accountStrings.isEmpty()) {
-            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            
+            //AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                
             alertDialog.setTitle("You need a google account to login!");
             alertDialog.setMessage("You need to create a google account on your phone in order to create an account. " +
-            		"This can be done by following the path:  Indstillinger -> Tilføj konto -> Google -> Tilføj en Google-konto");
+            		"Click 'redirect me!' to create a google account.");
             alertDialog.setCancelable(false);
-            alertDialog.setButton("Update", new DialogInterface.OnClickListener() {
+            
+            alertDialog.setPositiveButton("Redirect me!", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {	
+                	startActivity(new Intent(android.provider.Settings.ACTION_ADD_ACCOUNT));
+                }
+            });
+           
+            alertDialog.setNegativeButton("Update", new DialogInterface.OnClickListener() {
                  public void onClick(DialogInterface dialog, int which) {
                 	setUpAccountDropDown();
                 }
