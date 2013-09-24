@@ -65,13 +65,16 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 		//Zooms in on our current position
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
-		map.animateCamera(cameraUpdate);
+		
 		
 		//Adds a marker of our current position to our map.
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		map.addMarker(new MarkerOptions()
-        .position(latLng)
-        .title(LoginActivity.selectedUser));
+		.position(latLng)
+		.title(LoginActivity.selectedUser));
+		
+		map.animateCamera(cameraUpdate);
+		
 
 		//Adds a toast that pops up with our current coordinates once connected.
 		String currentCoordinates = location.toString();
