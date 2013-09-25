@@ -1,5 +1,8 @@
 package dk.au.cs.skatespots;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import android.accounts.Account;
@@ -10,13 +13,24 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class LoginActivity extends Activity {
 
+	//TODO Make so that when you login and click back, and click login your position will still be displayed.
+	
+	
+	
 	final Context context = this;
 	public static String selectedUser;
 
@@ -84,8 +98,7 @@ public class LoginActivity extends Activity {
 
 
 	public void login(View view) {
-		mainActivity();
-		/*Spinner user_name = (Spinner) findViewById(R.id.user_name);
+		Spinner user_name = (Spinner) findViewById(R.id.user_name);
 		selectedUser = user_name.getSelectedItem().toString();
 		EditText password = (EditText) findViewById(R.id.password);
 		String uePassword = password.getText().toString();
@@ -101,7 +114,7 @@ public class LoginActivity extends Activity {
 
 		JsonObject obj = new JsonObject();
 		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a key
-		obj.add("type", new JsonPrimitive("login"));
+		obj.add("type", new JsonPrimitive(0));
 		obj.add("email", new JsonPrimitive(selectedUser));
 		obj.add("password", new JsonPrimitive(ePassword));
 
@@ -109,16 +122,32 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onSuccess(String response) {
 				mainActivity();
-				// TODO Set a flag somewhere to mark that we are logged in
+				
+				//Makes a toast to display success
+				Context context = getApplicationContext();
+				CharSequence text = "You succesfully logged in as " + selectedUser;
+				int duration = Toast.LENGTH_LONG;
+
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+				toast.show();
+
 			}
 			@Override
 			public void onFailure(Throwable error, String content) {
-				sendFailureMessage(error, content);
-				// TODO Invoke a method that tells the user that either the email or the password was wrong
+				
+				//Makes a toast to display failure
+				Context context = getApplicationContext();
+				CharSequence text = "Username or password was wrong";
+				int duration = Toast.LENGTH_LONG;
+
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+				toast.show();
 			}
 		};	
 
-		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);*/
+		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
 	}
 
 	public void createUser(View view){

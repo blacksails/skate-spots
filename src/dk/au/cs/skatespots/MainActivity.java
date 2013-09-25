@@ -20,10 +20,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends Activity implements ConnectionCallbacks, 
-													  OnConnectionFailedListener,
-													  LocationListener
-													  //OnAddGeofencesResultListener 
-													  {
+OnConnectionFailedListener,
+LocationListener
+//OnAddGeofencesResultListener 
+{
 	LocationClient locationClient;
 	private static GoogleMap map;
 	private Location location;	
@@ -36,7 +36,8 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 		setUpMapIfNeeded();
 		locationClient = new LocationClient(this, this, this);
 		locationClient.connect();
-	}
+		}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,14 +63,14 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 
 		//Zooms in on our current position
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 20);
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
 		map.animateCamera(cameraUpdate);
-		
+
 		//Adds a marker of our current position to our map.
 		map.addMarker(new MarkerOptions()
 		.position(latLng)
 		.title(LoginActivity.selectedUser)); //Cannot currently get email, due to it being commented out.
-		
+
 		//Adds a toast that pops up with our current coordinates once connected.
 		String currentCoordinates = location.toString();
 		Context context = getApplicationContext();
@@ -78,28 +79,30 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
-		
+
 		//Starts the thread with updateMarkers
-		Thread t = new Thread(new PeriodicUpdates());
-        t.start();
+		//Thread t = new Thread(new PeriodicUpdates());
+		//t.start();
 	}
-	
+
+
+
 	public static void updateMarkers() {
+
+
 		//Clears all current markers.
 		map.clear();
-		
+
 		//Gets the results from the database
 		//and makes new marker for every result
-		
+
 		map.addMarker(new MarkerOptions()
 		.position(new LatLng(10, 10)) 	//Position of user
 		.title("Display name"));
 	}
-	
+
 	@Override
 	public void onDisconnected() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -112,7 +115,7 @@ public class MainActivity extends Activity implements ConnectionCallbacks,
 	public void onLocationChanged(Location arg0) {
 		// What to do when the users current position is changed.
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
