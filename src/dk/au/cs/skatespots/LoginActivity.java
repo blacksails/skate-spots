@@ -1,8 +1,5 @@
 package dk.au.cs.skatespots;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import android.accounts.Account;
@@ -16,12 +13,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class LoginActivity extends Activity {
 
