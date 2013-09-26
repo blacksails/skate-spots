@@ -5,6 +5,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,6 +19,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class MainActivity extends Activity implements ConnectionCallbacks, 
 OnConnectionFailedListener,
@@ -36,7 +41,7 @@ LocationListener
 		setUpMapIfNeeded();
 		locationClient = new LocationClient(this, this, this);
 		locationClient.connect();
-		}
+	}
 
 
 	@Override
@@ -72,33 +77,80 @@ LocationListener
 		.title(LoginActivity.selectedUser)); //Cannot currently get email, due to it being commented out.
 
 		//Adds a toast that pops up with our current coordinates once connected.
-		String currentCoordinates = location.toString();
+		String currentCoordinates = latLng.toString();
 		Context context = getApplicationContext();
 		CharSequence text = currentCoordinates;
 		int duration = Toast.LENGTH_LONG;
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
-
-		//Starts the thread with updateMarkers
-		//Thread t = new Thread(new PeriodicUpdates());
-		//t.start();
 	}
 
 
+	public void sendMyLocation(View view){
+		String email = LoginActivity.selectedUser;
 
-	public static void updateMarkers() {
+		double latitude = location.getLatitude();
+		double longitude = location.getLongitude();
+	
 
+		JsonObject obj = new JsonObject();
+		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
+		obj.add("type", new JsonPrimitive(2));
+		obj.add("email", new JsonPrimitive(email));
+		obj.add("latitude", new JsonPrimitive(latitude));
+		obj.add("longitude", new JsonPrimitive(longitude));
+		
+		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+			public void onSuccess(String response) {
+				// TODO Tell the user that he succeeded			
+			}
 
-		//Clears all current markers.
-		map.clear();
+			public void onFailure(Throwable e, String response) {
+				// TODO Tell the user that the app can't find him
+				sendFailureMessage(e, response);
+			}
+		};
+		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
+	}
 
-		//Gets the results from the database
-		//and makes new marker for every result
-
+	//Takes a location and displayname as input, and puts a marker down for that.
+	public void addMarker(Location loc, String displayname) {
 		map.addMarker(new MarkerOptions()
-		.position(new LatLng(10, 10)) 	//Position of user
-		.title("Display name"));
+		.position(new LatLng(loc.getLatitude(), loc.getLongitude())) 	//Position of user
+		.title(displayname));
+	}
+
+	@Override
+	public void onLocationChanged(Location arg0) {
+		// What to do when the users current position is changed.
+		// TODO Auto-generated method stub
+	}
+
+
+	//public void setMarkers{
+		//Should browse through the received set, and then take the JSON element and convert it to an location.
+		
+		//ResultSet = xx
+		
+		//for(int i=0; i<ResultSet.length; i++){
+				//ResultSet = Divide up into LocationString and DisplayName
+				//Location loca = JSONtoLocation(ResultSet[i]);
+				//String displayName = recieve displayName from ResultSet
+				//addMarker(loca, displayName);
+		//}
+	//x	
+	//}
+	
+	//Takes the LocationString from Json and makes it back to a Location object
+	public Location JSONtoLocation(String s){
+
+		Gson gson = new Gson();
+
+		//convert the json string back to object
+		Location loc = gson.fromJson(s, Location.class);
+
+		return loc;
 	}
 
 	@Override
@@ -110,12 +162,4 @@ LocationListener
 		// TODO Auto-generated method stub
 
 	}
-
-	@Override
-	public void onLocationChanged(Location arg0) {
-		// What to do when the users current position is changed.
-		// TODO Auto-generated method stub
-
-	}
-
 }
