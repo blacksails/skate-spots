@@ -2,9 +2,11 @@ package dk.au.cs.skatespots;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,7 +21,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -92,7 +93,7 @@ LocationListener
 
 		double latitude = location.getLatitude();
 		double longitude = location.getLongitude();
-	
+
 
 		JsonObject obj = new JsonObject();
 		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
@@ -100,7 +101,7 @@ LocationListener
 		obj.add("email", new JsonPrimitive(email));
 		obj.add("latitude", new JsonPrimitive(latitude));
 		obj.add("longitude", new JsonPrimitive(longitude));
-		
+
 		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 			public void onSuccess(String response) {
 				// TODO Tell the user that he succeeded			
@@ -129,30 +130,51 @@ LocationListener
 
 
 	//public void setMarkers{
-		//Should browse through the received set, and then take the JSON element and convert it to an location.
-		
-		//ResultSet = xx
-		
-		//for(int i=0; i<ResultSet.length; i++){
-				//ResultSet = Divide up into LocationString and DisplayName
-				//Location loca = JSONtoLocation(ResultSet[i]);
-				//String displayName = recieve displayName from ResultSet
-				//addMarker(loca, displayName);
-		//}
+	//Should browse through the received set, and then take the JSON element and convert it to an location.
+
+	//ResultSet = xx
+
+	//for(int i=0; i<ResultSet.length; i++){
+	//ResultSet = Divide up into LocationString and DisplayName
+	//Location loca = JSONtoLocation(ResultSet[i]);
+	//String displayName = recieve displayName from ResultSet
+	//addMarker(loca, displayName);
+	//}
 	//x	
 	//}
-	
+
 	//Takes the LocationString from Json and makes it back to a Location object
-	public Location JSONtoLocation(String s){
 
-		Gson gson = new Gson();
 
-		//convert the json string back to object
-		Location loc = gson.fromJson(s, Location.class);
-
-		return loc;
+	//METHOD FOR HANDLING MENU ITEMS
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.action_settings:
+	        	createUserActivity();
+	            return true;
+	        case R.id.menu_create:
+	        	//TODO Specify create in the menu
+	        	return true;
+	        case R.id.menu_modify:
+	        	//TODO Specify modify in the menu
+	        	return true;
+	        case R.id.menu_delete:
+	        	//TODO Specify delete in the menu
+	        	return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
+	
+	private void createUserActivity() {
+		Intent intent = new Intent(this, CreateUserActivity.class);
+		startActivity(intent);
 	}
 
+	//NOT CURRENTLY USED METHODS:
 	@Override
 	public void onDisconnected() {
 	}
@@ -162,4 +184,6 @@ LocationListener
 		// TODO Auto-generated method stub
 
 	}
+
+
 }
