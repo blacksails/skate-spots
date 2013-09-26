@@ -14,6 +14,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationClient.OnAddGeofencesResultListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,8 +28,8 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class MainActivity extends Activity implements ConnectionCallbacks, 
 OnConnectionFailedListener,
-LocationListener
-//OnAddGeofencesResultListener 
+LocationListener,
+OnAddGeofencesResultListener 
 {
 	LocationClient locationClient;
 	private static GoogleMap map;
@@ -124,7 +125,6 @@ LocationListener
 
 	@Override
 	public void onLocationChanged(Location arg0) {
-		// What to do when the users current position is changed.
 		// TODO Auto-generated method stub
 	}
 
@@ -146,29 +146,34 @@ LocationListener
 	//Takes the LocationString from Json and makes it back to a Location object
 
 
+	//METHOD FOR DISABLING BACK BUTTON
+	@Override
+	public void onBackPressed() {
+	}	
+
 	//METHOD FOR HANDLING MENU ITEMS
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.action_settings:
-	        	createUserActivity();
-	            return true;
-	        case R.id.menu_create:
-	        	//TODO Specify create in the menu
-	        	return true;
-	        case R.id.menu_modify:
-	        	//TODO Specify modify in the menu
-	        	return true;
-	        case R.id.menu_delete:
-	        	//TODO Specify delete in the menu
-	        	return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			createUserActivity();
+			return true;
+		case R.id.menu_create:
+			//TODO Specify create in the menu
+			return true;
+		case R.id.menu_modify:
+			//TODO Specify modify in the menu
+			return true;
+		case R.id.menu_delete:
+			//TODO Specify delete in the menu
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
-	
-	
+
+	//FOR TESTING PURPOSES: SEE onOptionsItemSelected -> Action_settings
 	private void createUserActivity() {
 		Intent intent = new Intent(this, CreateUserActivity.class);
 		startActivity(intent);
@@ -183,6 +188,13 @@ LocationListener
 	public void onConnectionFailed(ConnectionResult arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+
+	@Override
+	public void onAddGeofencesResult(int arg0, String[] arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

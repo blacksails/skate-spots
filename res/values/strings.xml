@@ -3,7 +3,7 @@
 
     <string name="app_name">Skate Spots</string>
     <string name="action_settings">Settings</string>
-    <string name="menu_reminders">Reminders</string>
+    <string name="menu_reminders">Reminder options</string>
     <string name="menu_create">Create new</string>
     <string name="menu_modify">Modify existing</string>
     <string name="menu_delete">Delete existing</string>
