@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -23,7 +21,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -35,6 +36,8 @@ OnAddGeofencesResultListener
 	LocationClient locationClient;
 	private static GoogleMap map;
 	private Location location;	
+	private JsonParser parser;
+	private JsonElement jsonElement;
 
 
 	@Override
@@ -68,8 +71,6 @@ OnAddGeofencesResultListener
 	@Override
 	public void onConnected(Bundle arg0) {
 		location = locationClient.getLastLocation();
-
-		getAllLocations();
 		
 		//Zooms in on our current position
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -90,6 +91,7 @@ OnAddGeofencesResultListener
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();*/
 		
+		getAllLocations();
 		sendMyLocation();
 	}
 
@@ -122,14 +124,15 @@ OnAddGeofencesResultListener
 
 	
 	//Takes a location and displayname as input, and puts a marker down for that.
-	public void addMarker(Location loc, String displayname) {
+	public void addMarker(long latitude, long longitude, String displayname) {
 		map.addMarker(new MarkerOptions()
-		.position(new LatLng(loc.getLatitude(), loc.getLongitude())) 	//Position of user
+		.position(new LatLng(latitude, longitude)) 	//Position of user
 		.title(displayname));
 	}
 
 	@Override
 	public void onLocationChanged(Location arg0) {
+		getAllLocations();
 		sendMyLocation();
 	}
 
@@ -144,13 +147,24 @@ OnAddGeofencesResultListener
 
 	AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 		public void onSuccess(String response) {
-			Context context = getApplicationContext();
-			CharSequence text = response;
-			int duration = Toast.LENGTH_LONG;
+			parser = new JsonParser();	
+			jsonElement = parser.parse(response);
+			JsonArray jsonArray = jsonElement.getAsJsonArray();
 
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
-			
+			for (int i = 0; i < jsonArray.size(); i++) {
+				
+				JsonElement jsonEle = jsonArray.get(i);
+				JsonObject jsonObject = jsonEle.getAsJsonObject(); 
+				JsonPrimitive jDisplayname = jsonObject.getAsJsonPrimitive("displayname");
+				JsonPrimitive jLatitude = jsonObject.getAsJsonPrimitive("latitude");
+				JsonPrimitive jLongitude = jsonObject.getAsJsonPrimitive("longitude");
+				
+				String displayname = jDisplayname.getAsString();
+				long latitude = jLatitude.getAsLong();
+				long longitude = jLongitude.getAsLong();
+				
+				addMarker(latitude, longitude, displayname);				
+			}			
 		}
 
 		public void onFailure(Throwable e, String response) {
@@ -170,23 +184,6 @@ OnAddGeofencesResultListener
 }
 	
 	
-	//public void setMarkers{
-	//Should browse through the received set, and then take the JSON element and convert it to an location.
-
-	//ResultSet = xx
-
-	//for(int i=0; i<ResultSet.length; i++){
-	//ResultSet = Divide up into LocationString and DisplayName
-	//Location loca = JSONtoLocation(ResultSet[i]);
-	//String displayName = recieve displayName from ResultSet
-	//addMarker(loca, displayName);
-	//}
-	//x	
-	//}
-
-	//Takes the LocationString from Json and makes it back to a Location object
-
-
 	//METHOD FOR DISABLING BACK BUTTON
 	/*@Override
 	public void onBackPressed() {
