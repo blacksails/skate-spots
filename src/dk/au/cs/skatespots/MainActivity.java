@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,6 +69,8 @@ OnAddGeofencesResultListener
 	public void onConnected(Bundle arg0) {
 		location = locationClient.getLastLocation();
 
+		getAllLocations();
+		
 		//Zooms in on our current position
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
@@ -79,22 +82,23 @@ OnAddGeofencesResultListener
 		.title(LoginActivity.selectedUser)); //Cannot currently get email, due to it being commented out.
 
 		//Adds a toast that pops up with our current coordinates once connected.
-		String currentCoordinates = latLng.toString();
+		/*String currentCoordinates = latLng.toString();
 		Context context = getApplicationContext();
 		CharSequence text = currentCoordinates;
-		int duration = Toast.LENGTH_LONG;
+		int duration = Toast.LENGTH_SHORT;
 
 		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
+		toast.show();*/
+		
+		sendMyLocation();
 	}
 
 
-	public void sendMyLocation(View view){
+	public void sendMyLocation(){
 		String email = LoginActivity.selectedUser;
 
 		double latitude = location.getLatitude();
 		double longitude = location.getLongitude();
-
 
 		JsonObject obj = new JsonObject();
 		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
@@ -116,6 +120,7 @@ OnAddGeofencesResultListener
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
 	}
 
+	
 	//Takes a location and displayname as input, and puts a marker down for that.
 	public void addMarker(Location loc, String displayname) {
 		map.addMarker(new MarkerOptions()
@@ -125,10 +130,46 @@ OnAddGeofencesResultListener
 
 	@Override
 	public void onLocationChanged(Location arg0) {
-		// TODO Auto-generated method stub
+		sendMyLocation();
 	}
 
 
+	public void getAllLocations(){
+	String email = LoginActivity.selectedUser;	
+		
+	JsonObject obj = new JsonObject();
+	obj.add("email", new JsonPrimitive(email));
+	obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
+	obj.add("type", new JsonPrimitive(3));
+
+	AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+		public void onSuccess(String response) {
+			Context context = getApplicationContext();
+			CharSequence text = response;
+			int duration = Toast.LENGTH_LONG;
+
+			Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+			
+		}
+
+		public void onFailure(Throwable e, String response) {
+			// TODO 
+			Context context = getApplicationContext();
+			CharSequence text = e.toString();
+			int duration = Toast.LENGTH_LONG;
+
+			Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+			sendFailureMessage(e, response);
+		}
+	};
+	SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);	
+	
+	
+}
+	
+	
 	//public void setMarkers{
 	//Should browse through the received set, and then take the JSON element and convert it to an location.
 
@@ -147,9 +188,9 @@ OnAddGeofencesResultListener
 
 
 	//METHOD FOR DISABLING BACK BUTTON
-	@Override
+	/*@Override
 	public void onBackPressed() {
-	}	
+	}*/	
 
 	//METHOD FOR HANDLING MENU ITEMS
 	@Override
