@@ -34,7 +34,8 @@ LocationListener,
 OnAddGeofencesResultListener 
 {
 	LocationClient locationClient;
-	private static GoogleMap map;
+	//Map'et kan ikke være statisk, da det ellers ikke kan bibeholde markers ved rotation.
+	private GoogleMap map;
 	private Location location;	
 	private JsonParser parser;
 	private JsonElement jsonElement;
@@ -80,16 +81,7 @@ OnAddGeofencesResultListener
 		//Adds a marker of our current position to our map.
 		map.addMarker(new MarkerOptions()
 		.position(latLng)
-		.title(LoginActivity.selectedUser)); //Cannot currently get email, due to it being commented out.
-
-		//Adds a toast that pops up with our current coordinates once connected.
-		/*String currentCoordinates = latLng.toString();
-		Context context = getApplicationContext();
-		CharSequence text = currentCoordinates;
-		int duration = Toast.LENGTH_SHORT;
-
-		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();*/
+		.title(LoginActivity.selectedUser));
 		
 		getAllLocations();
 		sendMyLocation();
@@ -109,16 +101,7 @@ OnAddGeofencesResultListener
 		obj.add("latitude", new JsonPrimitive(latitude));
 		obj.add("longitude", new JsonPrimitive(longitude));
 
-		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
-			public void onSuccess(String response) {
-				// TODO Tell the user that he succeeded			
-			}
-
-			public void onFailure(Throwable e, String response) {
-				// TODO Tell the user that the app can't find him
-				sendFailureMessage(e, response);
-			}
-		};
+		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler();	
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
 	}
 
@@ -216,6 +199,9 @@ OnAddGeofencesResultListener
 		Intent intent = new Intent(this, CreateUserActivity.class);
 		startActivity(intent);
 	}
+	
+	
+	
 
 	//NOT CURRENTLY USED METHODS:
 	@Override
