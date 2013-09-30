@@ -33,12 +33,16 @@ OnConnectionFailedListener,
 LocationListener,
 OnAddGeofencesResultListener 
 {
+	//TODO Might be missing updates on our own marker. Need to check.
+	
+	
 	LocationClient locationClient;
 	//Map'et kan ikke være statisk, da det ellers ikke kan bibeholde markers ved rotation.
 	private GoogleMap map;
 	private Location location;	
 	private JsonParser parser;
 	private JsonElement jsonElement;
+	private String email = LoginActivity.selectedUser;
 
 
 	@Override
@@ -89,7 +93,6 @@ OnAddGeofencesResultListener
 
 
 	public void sendMyLocation(){
-		String email = LoginActivity.selectedUser;
 
 		double latitude = location.getLatitude();
 		double longitude = location.getLongitude();
@@ -109,10 +112,11 @@ OnAddGeofencesResultListener
 	//Takes a location and displayname as input, and puts a marker down for that.
 	public void addMarker(long latitude, long longitude, String displayname) {
 		map.addMarker(new MarkerOptions()
-		.position(new LatLng(latitude, longitude)) 	//Position of user
+		.position(new LatLng(latitude, longitude))
 		.title(displayname));
 	}
 
+	//Updates the database, and checks for updates on the database whenever the user moves.
 	@Override
 	public void onLocationChanged(Location arg0) {
 		getAllLocations();
@@ -120,6 +124,7 @@ OnAddGeofencesResultListener
 	}
 
 
+	//Retrieves locations of all users on the database that have been on within the past hour.
 	public void getAllLocations(){
 	String email = LoginActivity.selectedUser;	
 		
@@ -162,16 +167,9 @@ OnAddGeofencesResultListener
 		}
 	};
 	SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);	
-	
-	
 }
 	
 	
-	//METHOD FOR DISABLING BACK BUTTON
-	/*@Override
-	public void onBackPressed() {
-	}*/	
-
 	//METHOD FOR HANDLING MENU ITEMS
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -194,15 +192,13 @@ OnAddGeofencesResultListener
 		}
 	}
 
+	
 	//FOR TESTING PURPOSES: SEE onOptionsItemSelected -> Action_settings
 	private void createUserActivity() {
 		Intent intent = new Intent(this, CreateUserActivity.class);
 		startActivity(intent);
 	}
 	
-	
-	
-
 	//NOT CURRENTLY USED METHODS:
 	@Override
 	public void onDisconnected() {
@@ -213,7 +209,6 @@ OnAddGeofencesResultListener
 		// TODO Auto-generated method stub
 
 	}
-
 
 	@Override
 	public void onAddGeofencesResult(int arg0, String[] arg1) {
