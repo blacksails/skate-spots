@@ -3,6 +3,10 @@
 
     <string name="app_name">Skate Spots</string>
     <string name="action_settings">Settings</string>
+    <string name="menu_reminders">Reminder options</string>
+    <string name="menu_create">Create new</string>
+    <string name="menu_modify">Modify existing</string>
+    <string name="menu_delete">Delete existing</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_login">Login to Skate Spots</string>
     <string name="enter_user_name">User name</string>

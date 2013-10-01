@@ -8,13 +8,16 @@ import java.util.ArrayList;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -22,6 +25,9 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class CreateUserActivity extends Activity {
 
+	//TODO @Override public void onBackPressed() {} -> Mulig løsning til problemet med kort.
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,7 +43,6 @@ public class CreateUserActivity extends Activity {
 	}
 	
 	private void setUpAccountDropDown() {
-		
 		AccountManager am = AccountManager.get(this);
 		Account[] accounts = am.getAccountsByType("com.google");
 		ArrayList<String> accountStrings = new ArrayList<String>();
@@ -74,7 +79,7 @@ public class CreateUserActivity extends Activity {
 		
 		JsonObject obj = new JsonObject();
 		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
-		obj.add("type", new JsonPrimitive("createUser"));
+		obj.add("type", new JsonPrimitive(1));
 		obj.add("email", new JsonPrimitive(email));
 		obj.add("password", new JsonPrimitive(ePassword));
 		obj.add("displayname", new JsonPrimitive(displayname));
@@ -85,8 +90,14 @@ public class CreateUserActivity extends Activity {
 				mainActivity();
 			}
 			public void onFailure(Throwable e, String response) {
-				// TODO Tell the user that there already is an account registered with the given address
-				sendFailureMessage(e, response);
+				//Makes a toast to display that an account already exists
+				Context context = getApplicationContext();
+				CharSequence text = "An account with that email already exists";
+				int duration = Toast.LENGTH_LONG;
+
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
+				toast.show();
 			}
 		};
 		
