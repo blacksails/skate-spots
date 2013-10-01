@@ -47,6 +47,10 @@
             android:name="dk.au.cs.skatespots.CreateUserActivity"
             android:label="@string/title_activity_create_user" >
         </activity>
+        <activity
+            android:name="dk.au.cs.skatespots.WifiAndBluetooth"
+            android:label="@string/title_activity_wifi_and_bluetooth" >
+        </activity>
     </application>
 
 </manifest>

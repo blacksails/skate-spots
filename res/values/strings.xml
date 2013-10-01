@@ -16,5 +16,7 @@
     <string name="create_user">Create user</string>
     <string name="title_activity_create_user">Create new user</string>
     <string name="display_name">Display name</string>
+    <string name="title_activity_wifi_and_bluetooth">WifiAndBluetooth</string>
+    <string name="wifi_and_bluetooth">Wifi and Bluetooth</string>
 
 </resources>

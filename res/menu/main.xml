@@ -16,20 +16,22 @@
                 android:orderInCategory="102"
                 android:showAsAction="never"
                 android:title="@string/menu_create"/>
-            
-             <item
+            <item
                 android:id="@+id/menu_modify"
                 android:orderInCategory="103"
                 android:showAsAction="never"
                 android:title="@string/menu_modify"/>
-             
-              <item
+            <item
                 android:id="@+id/menu_delete"
                 android:orderInCategory="104"
                 android:showAsAction="never"
                 android:title="@string/menu_delete"/>
-              
         </menu>
     </item>
+    <item
+        android:id="@+id/wifi_and_bluetooth"
+        android:orderInCategory="105"
+        android:showAsAction="never"
+        android:title="@string/wifi_and_bluetooth"/>
 
 </menu>

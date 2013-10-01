@@ -36,7 +36,7 @@ OnAddGeofencesResultListener
 	//TODO Might be missing updates on our own marker. Need to check.
 	
 	
-	LocationClient locationClient;
+	private LocationClient locationClient;
 	//Map'et kan ikke være statisk, da det ellers ikke kan bibeholde markers ved rotation.
 	private GoogleMap map;
 	private Location location;	
@@ -175,8 +175,8 @@ OnAddGeofencesResultListener
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.action_settings:
-			createUserActivity();
+		case R.id.wifi_and_bluetooth:
+			wifiAndBluetooth();
 			return true;
 		case R.id.menu_create:
 			//TODO Specify create in the menu
@@ -187,17 +187,27 @@ OnAddGeofencesResultListener
 		case R.id.menu_delete:
 			//TODO Specify delete in the menu
 			return true;
+		case R.id.action_settings:
+			createUserActivity();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
+	private void wifiAndBluetooth() {
+		Intent intent = new Intent(this, WifiAndBluetooth.class);
+		startActivity(intent);
+	}
+	
 	
 	//FOR TESTING PURPOSES: SEE onOptionsItemSelected -> Action_settings
 	private void createUserActivity() {
 		Intent intent = new Intent(this, CreateUserActivity.class);
 		startActivity(intent);
 	}
+	
+	
 	
 	//NOT CURRENTLY USED METHODS:
 	@Override
