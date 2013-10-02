@@ -176,7 +176,12 @@ OnAddGeofencesResultListener
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.wifi_and_bluetooth:
-			wifiAndBluetooth();
+			return true;
+		case R.id.wifi:
+			goToWifi();
+			return true;
+		case R.id.bluetooth:
+			goToBluetooth();
 			return true;
 		case R.id.menu_create:
 			//TODO Specify create in the menu
@@ -195,8 +200,13 @@ OnAddGeofencesResultListener
 		}
 	}
 
-	private void wifiAndBluetooth() {
-		Intent intent = new Intent(this, WifiAndBluetooth.class);
+	private void goToBluetooth() {
+		Intent intent = new Intent(this, Bluetooth.class);
+		startActivity(intent);
+	}
+	
+	private void goToWifi() {
+		Intent intent = new Intent(this, Wifi.class);
 		startActivity(intent);
 	}
 	

@@ -4,17 +4,15 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-
-
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/hello_world"
+        android:text="@string/wifi"
         android:textSize="20sp" />
 
     <ListView
-        android:id="@+id/blueToothDevicesView"
+        android:id="@+id/wifiListView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
     </ListView>

@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -68,6 +70,8 @@ public class CreateUserActivity extends Activity {
 		EditText password = (EditText) findViewById(R.id.password);
 		String uePassword = password.getText().toString();
 		String ePassword = null;
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		String bluid = bluetoothAdapter.getAddress();
 		
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
@@ -83,6 +87,7 @@ public class CreateUserActivity extends Activity {
 		obj.add("email", new JsonPrimitive(email));
 		obj.add("password", new JsonPrimitive(ePassword));
 		obj.add("displayname", new JsonPrimitive(displayname));
+		obj.add("bluid", new JsonPrimitive(bluid));
 		
 		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 			public void onSuccess(String response) {
