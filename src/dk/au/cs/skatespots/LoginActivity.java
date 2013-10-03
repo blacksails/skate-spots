@@ -98,6 +98,7 @@ public class LoginActivity extends Activity {
 
 
 	public void login(View view) {
+		mainActivity();
 		Spinner user_name = (Spinner) findViewById(R.id.user_name);
 		selectedUser = user_name.getSelectedItem().toString();
 		EditText password = (EditText) findViewById(R.id.password);

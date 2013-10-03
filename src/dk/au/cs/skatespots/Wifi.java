@@ -34,11 +34,12 @@ public class Wifi extends Activity {
 
 		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
 			public void onReceive(Context c, Intent i){
-				WifiManager w = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+				WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
 				//Listen over netværk
-				List<ScanResult> sr = w.getScanResults();
+				List<ScanResult> scanResults = wifiManager.getScanResults();
+				
 				//Tilføjer vores devices pr. navn og addresse til vores ListView gennem vores arrayAdapter.
-				for(ScanResult s : sr){
+				for(ScanResult s : scanResults){
 					arrayAdapter.add(s.SSID + "\n" + s.BSSID);
 				}
 			}
@@ -48,6 +49,8 @@ public class Wifi extends Activity {
 		registerReceiver(broadcastReceiver, intentFilter);
 
 		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		//Sets the android's WiFi options to enabled.
+		wifiManager.setWifiEnabled(true);
 		wifiManager.startScan();
 	}
 
