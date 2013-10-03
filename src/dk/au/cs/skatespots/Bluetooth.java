@@ -1,5 +1,7 @@
 package dk.au.cs.skatespots;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import android.app.Activity;
@@ -10,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -20,6 +21,7 @@ public class Bluetooth extends Activity {
 	private ListView bluetoothListView;
 	private BluetoothAdapter bluetoothAdapter;
 	private Set<BluetoothDevice> pairedDevices;
+	private List<BluetoothDevice> bluetoothDevices = new ArrayList<BluetoothDevice>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,52 +34,39 @@ public class Bluetooth extends Activity {
 	}
 
 	public void getBluetoothDevices(){
-		//Our own device's bluetooth adapter. There's only one for the whole system. If = null, then system doesn't support bluetooth.		
+				
 		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		pairedDevices = bluetoothAdapter.getBondedDevices();
 		arrayAdapter =  new ArrayAdapter<String>(this, R.layout.simplerow);
 		bluetoothListView.setAdapter(arrayAdapter);
 
-		//Receives bonded devices and puts them into the arrayAdapter.
+		//Ser på bonded devices
 		if (pairedDevices.size() > 0) {
-			// Loop through paired devices
 			for (BluetoothDevice device : pairedDevices) {
-				// Add the name and address to an array adapter to show in a ListView
+				// Tilføjer bonded devices til vores listView gennem arrayAdapter.
 				arrayAdapter.add(device.getName() + "\n" + device.getAddress());
 			}
 		}
 
-
-
-		// Create a BroadcastReceiver for ACTION_FOUND
-		final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		// Laver en BroadcastReceiver for ACTION_FOUND
+		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 			public void onReceive(Context context, Intent intent) {
 				String action = intent.getAction();
-				// When discovery finds a device
 				if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-					// Get the BluetoothDevice object from the Intent
 					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-					// Add the name and address to an array adapter to show in a ListView
+					// Tilføjer bluetooth devices til vores listView gennem arrayAdapter.
 					arrayAdapter.add(device.getName() + "\n" + device.getAddress());
+					//Tilføjer alle bluetoothDevices til listen bluetoothDevices.
+					bluetoothDevices.add(device);
 				}
 			}
 		};
-		// Register the BroadcastReceiver
-		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+		
+		IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		registerReceiver(broadcastReceiver, intentFilter); // Don't forget to unregister during onDestroy
 
 		bluetoothAdapter.startDiscovery();
 
+		//Mangler måske at implementere metoder til onPause og onResume for broadcastReciever? Samme gælder i Wifi.
 	}
-	
-
-
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.bluetooth, menu);
-		return true;
-	}
-
 }
