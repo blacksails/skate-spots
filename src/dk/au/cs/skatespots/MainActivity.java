@@ -35,9 +35,7 @@ OnAddGeofencesResultListener
 {
 	//TODO Might be missing updates on our own marker. Need to check.
 	
-	
 	private LocationClient locationClient;
-	//Map'et kan ikke være statisk, da det ellers ikke kan bibeholde markers ved rotation.
 	private GoogleMap map;
 	private Location location;	
 	private JsonParser parser;
@@ -218,7 +216,7 @@ OnAddGeofencesResultListener
 	}
 	
 	
-	
+
 	//NOT CURRENTLY USED METHODS:
 	@Override
 	public void onDisconnected() {

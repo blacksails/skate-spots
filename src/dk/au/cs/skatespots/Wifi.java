@@ -29,9 +29,6 @@ public class Wifi extends Activity {
 		arrayAdapter =  new ArrayAdapter<String>(this, R.layout.simplerow);
 		wifiListView.setAdapter(arrayAdapter);
 
-
-
-
 		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
 			public void onReceive(Context c, Intent i){
 				WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);

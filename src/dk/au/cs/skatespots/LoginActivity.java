@@ -27,10 +27,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class LoginActivity extends Activity {
 
-	//TODO Make so that when you login and click back, and click login your position will still be displayed.
-	
-	
-	
+
 	final Context context = this;
 	public static String selectedUser;
 
@@ -39,10 +36,7 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		setUpAccountDropDown();
-		// Lav setUpAccountDropDown(); når man klikker på spinderen.
 	}
-
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

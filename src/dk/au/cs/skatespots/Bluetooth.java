@@ -30,7 +30,6 @@ public class Bluetooth extends Activity {
 
 		bluetoothListView = (ListView) findViewById(R.id.bluetoothListView);
 		getBluetoothDevices();
-
 	}
 
 	public void getBluetoothDevices(){
