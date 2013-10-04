@@ -8,13 +8,10 @@ import java.util.ArrayList;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-<<<<<<< HEAD
-import android.content.Context;
-=======
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
->>>>>>> origin/branchmarc
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -60,17 +57,6 @@ public class LoginActivity extends Activity {
 
 		//Hvis der ingen google accounts eksisterer på telefonen
 		if (accountStrings.isEmpty()) {
-<<<<<<< HEAD
-
-			Context context = getApplicationContext();
-			CharSequence text = "Please login with a google account on this device";
-			int duration = Toast.LENGTH_LONG;
-
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
-			
-		} else {
-=======
 			
 			//AlertDialog oprettes
 			AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
@@ -97,7 +83,6 @@ public class LoginActivity extends Activity {
 
 		//Hvis der eksisterer google accounts på telefonen
 		else {
->>>>>>> origin/branchmarc
 			Spinner user_name = (Spinner) findViewById(R.id.user_name);
 			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, accountStrings);
 			dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
