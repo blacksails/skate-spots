@@ -89,7 +89,7 @@ OnAddGeofencesResultListener
 		//Adds a marker of our current position to our map.
 		map.addMarker(new MarkerOptions()
 		.position(latLng)
-		.title(email));
+		.title(app.getCurrentDisplayName()));
 		
 		getAllLocations();
 		sendMyLocation();
