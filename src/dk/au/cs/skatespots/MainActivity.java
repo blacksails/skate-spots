@@ -1,5 +1,7 @@
 package dk.au.cs.skatespots;
 
+import java.util.Iterator;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,8 +39,7 @@ OnAddGeofencesResultListener
 	private SkateSpots app;
 	private LocationClient locationClient;
 	private GoogleMap map;
-	private Location location;	
-	private JsonParser parser;
+	private Location location;
 	private JsonElement jsonElement;
 	private String email;
 
@@ -114,7 +115,7 @@ OnAddGeofencesResultListener
 
 	
 	//Takes a location and displayname as input, and puts a marker down for that.
-	public void addMarker(long latitude, long longitude, String displayname) {
+	public void addMarker(Double latitude, Double longitude, String displayname) {
 		map.addMarker(new MarkerOptions()
 		.position(new LatLng(latitude, longitude))
 		.title(displayname));
@@ -138,21 +139,16 @@ OnAddGeofencesResultListener
 
 	AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 		public void onSuccess(String response) {
-			parser = new JsonParser();	
+			JsonParser parser = new JsonParser();	
 			jsonElement = parser.parse(response);
 			JsonArray jsonArray = jsonElement.getAsJsonArray();
+			Iterator<JsonElement> it = jsonArray.iterator();
 
-			for (int i = 0; i < jsonArray.size(); i++) {
-				
-				JsonElement jsonEle = jsonArray.get(i);
-				JsonObject jsonObject = jsonEle.getAsJsonObject(); 
-				JsonPrimitive jDisplayname = jsonObject.getAsJsonPrimitive("displayname");
-				JsonPrimitive jLatitude = jsonObject.getAsJsonPrimitive("latitude");
-				JsonPrimitive jLongitude = jsonObject.getAsJsonPrimitive("longitude");
-				
-				String displayname = jDisplayname.getAsString();
-				long latitude = jLatitude.getAsLong();
-				long longitude = jLongitude.getAsLong();
+			while (it.hasNext()) {
+				JsonObject obj = it.next().getAsJsonObject();
+				String displayname = obj.get("displayname").getAsString();
+				Double latitude = obj.get("latitude").getAsDouble();
+				Double longitude = obj.get("longitude").getAsDouble();
 				
 				addMarker(latitude, longitude, displayname);				
 			}			
