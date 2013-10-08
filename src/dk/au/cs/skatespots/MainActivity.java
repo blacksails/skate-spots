@@ -47,10 +47,7 @@ OnAddGeofencesResultListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		setUpMapIfNeeded();
-		locationClient = new LocationClient(this, this, this);
-		locationClient.connect();
-		app = (SkateSpots) this.getApplication();
+		setUpStuffIfNeeded();
 		email = app.getCurrentUser();
 	}
 
@@ -62,13 +59,20 @@ OnAddGeofencesResultListener
 		return true;
 	}
 
-	private void setUpMapIfNeeded() {
+	private void setUpStuffIfNeeded() {
 		if (map == null) {
 			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 			// Check if we were successful in obtaining the map.
 			if (map != null) {
 				map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 			}
+		}
+		if (locationClient == null) {
+			locationClient = new LocationClient(this,this,this);
+			locationClient.connect();
+		}
+		if (app == null) {
+			app = (SkateSpots) this.getApplication();
 		}
 	}
 
