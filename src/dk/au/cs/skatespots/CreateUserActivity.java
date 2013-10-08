@@ -25,15 +25,15 @@ import com.google.gson.JsonPrimitive;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class CreateUserActivity extends Activity {
-
-	//TODO @Override public void onBackPressed() {} -> Mulig løsning til problemet med kort.
 	
+	private SkateSpots app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_user);
-		setUpAccountDropDown();		
+		setUpAccountDropDown();	
+		app = (SkateSpots) this.getApplication();
 	}
 
 	@Override
@@ -64,6 +64,7 @@ public class CreateUserActivity extends Activity {
 	public void checkEligibilityLogin(View view){
 		Spinner user_name = (Spinner) findViewById(R.id.user_name);
 		String email = user_name.getSelectedItem().toString();
+		app.setCurrentUser(email);
 		EditText display_name = (EditText) findViewById(R.id.display_name);
 		String displayname = display_name.getText().toString();
 		EditText password = (EditText) findViewById(R.id.password);
