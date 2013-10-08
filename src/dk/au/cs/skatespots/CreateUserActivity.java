@@ -67,6 +67,7 @@ public class CreateUserActivity extends Activity {
 		app.setCurrentUser(email);
 		EditText display_name = (EditText) findViewById(R.id.display_name);
 		String displayname = display_name.getText().toString();
+		app.setCurrentDisplayName(displayname);
 		EditText password = (EditText) findViewById(R.id.password);
 		String uePassword = password.getText().toString();
 		String ePassword = null;
