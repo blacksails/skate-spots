@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
@@ -118,6 +118,9 @@ public class LoginActivity extends Activity {
 		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {
+				JsonObject res = new JsonParser().parse(response).getAsJsonObject();
+				app.setCurrentDisplayName(res.get("displayname").getAsString());
+				
 				mainActivity();
 				
 				//Makes a toast to display success
