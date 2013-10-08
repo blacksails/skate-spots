@@ -34,13 +34,13 @@ LocationListener,
 OnAddGeofencesResultListener 
 {
 	//TODO Might be missing updates on our own marker. Need to check.
-	
+	private SkateSpots app;
 	private LocationClient locationClient;
 	private GoogleMap map;
 	private Location location;	
 	private JsonParser parser;
 	private JsonElement jsonElement;
-	private String email = LoginActivity.selectedUser;
+	private String email;
 
 
 	@Override
@@ -50,6 +50,8 @@ OnAddGeofencesResultListener
 		setUpMapIfNeeded();
 		locationClient = new LocationClient(this, this, this);
 		locationClient.connect();
+		app = (SkateSpots) this.getApplication();
+		email = app.getCurrentUser();
 	}
 
 
@@ -83,7 +85,7 @@ OnAddGeofencesResultListener
 		//Adds a marker of our current position to our map.
 		map.addMarker(new MarkerOptions()
 		.position(latLng)
-		.title(LoginActivity.selectedUser));
+		.title(email));
 		
 		getAllLocations();
 		sendMyLocation();
@@ -124,7 +126,6 @@ OnAddGeofencesResultListener
 
 	//Retrieves locations of all users on the database that have been on within the past hour.
 	public void getAllLocations(){
-	String email = LoginActivity.selectedUser;	
 		
 	JsonObject obj = new JsonObject();
 	obj.add("email", new JsonPrimitive(email));

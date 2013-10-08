@@ -30,13 +30,14 @@ public class LoginActivity extends Activity {
 
 
 	final Context context = this;
-	public static String selectedUser;
+	private SkateSpots app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		setUpAccountDropDown();
+		app = (SkateSpots) this.getApplication();
 	}
 
 	@Override
@@ -94,7 +95,8 @@ public class LoginActivity extends Activity {
 
 	public void login(View view) {
 		Spinner user_name = (Spinner) findViewById(R.id.user_name);
-		selectedUser = user_name.getSelectedItem().toString();
+		String selectedUser = user_name.getSelectedItem().toString();
+		this.app.setCurrentUser(selectedUser);
 		EditText password = (EditText) findViewById(R.id.password);
 		String uePassword = password.getText().toString();
 		String ePassword = null;
@@ -120,7 +122,7 @@ public class LoginActivity extends Activity {
 				
 				//Makes a toast to display success
 				Context context = getApplicationContext();
-				CharSequence text = "You succesfully logged in as " + selectedUser;
+				CharSequence text = "You succesfully logged in as " + app.getCurrentUser();
 				int duration = Toast.LENGTH_LONG;
 
 				Toast toast = Toast.makeText(context, text, duration);
