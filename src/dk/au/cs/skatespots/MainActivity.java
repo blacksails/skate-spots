@@ -126,6 +126,11 @@ OnAddGeofencesResultListener
 		if (locationClient == null) {
 			locationClient = new LocationClient(this,this,this);
 			locationClient.connect();
+			if (locationRequest == null) {
+				locationRequest = LocationRequest.create();
+				locationRequest.setInterval(5000);
+				locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+			}
 		}
 		if (app == null) {
 			app = (SkateSpots) this.getApplication();
@@ -135,7 +140,7 @@ OnAddGeofencesResultListener
 		}
 		if (skateSpots == null) {
 			skateSpots = new HashMap<Marker,JsonObject>();
-			getSkateSpots();
+			//getSkateSpots();
 		}
 	}
 
@@ -143,13 +148,7 @@ OnAddGeofencesResultListener
 	@Override
 	public void onConnected(Bundle arg0) {
 		location = locationClient.getLastLocation();
-		
-		if (locationRequest == null) {
-			locationRequest = LocationRequest.create();
-			locationRequest.setInterval(5000);
-			locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-			locationClient.requestLocationUpdates(locationRequest, this);
-		}
+		locationClient.requestLocationUpdates(locationRequest, this);
 		
 		//Zooms in on our current position
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
