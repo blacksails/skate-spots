@@ -146,6 +146,7 @@ OnAddGeofencesResultListener
 		.position(latLng)
 		.icon(bitmapDescriptor)
 		.title(app.getCurrentDisplayName()));
+		getAllLocations();
 	}
 
 
