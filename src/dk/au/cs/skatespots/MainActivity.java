@@ -1,5 +1,6 @@
 package dk.au.cs.skatespots;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.app.Activity;
@@ -17,11 +18,15 @@ import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailed
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationClient.OnAddGeofencesResultListener;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -40,9 +45,10 @@ OnAddGeofencesResultListener
 	private LocationClient locationClient;
 	private GoogleMap map;
 	private Location location;
-	private JsonElement jsonElement;
+	private Marker myLocation;
 	private String email;
-
+	private ArrayList<Marker> currentOtherUsers;
+	private LocationRequest locationRequest;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +81,9 @@ OnAddGeofencesResultListener
 		if (app == null) {
 			app = (SkateSpots) this.getApplication();
 		}
+		if (currentOtherUsers == null) {
+			currentOtherUsers = new ArrayList<Marker>();
+		}
 	}
 
 
@@ -82,22 +91,22 @@ OnAddGeofencesResultListener
 	public void onConnected(Bundle arg0) {
 		location = locationClient.getLastLocation();
 		
+		if (locationRequest == null) {
+			locationRequest = LocationRequest.create();
+			locationRequest.setInterval(5000);
+			locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+			locationClient.requestLocationUpdates(locationRequest, this);
+		}
+		
 		//Zooms in on our current position
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
 		map.animateCamera(cameraUpdate);
-
-		//Adds a marker of our current position to our map.
-		map.addMarker(new MarkerOptions()
-		.position(latLng)
-		.title(app.getCurrentDisplayName()));
-		
-		getAllLocations();
-		sendMyLocation();
 	}
 
 
 	public void sendMyLocation(){
+		location = locationClient.getLastLocation();
 
 		double latitude = location.getLatitude();
 		double longitude = location.getLongitude();
@@ -115,17 +124,29 @@ OnAddGeofencesResultListener
 
 	
 	//Takes a location and displayname as input, and puts a marker down for that.
-	public void addMarker(Double latitude, Double longitude, String displayname) {
-		map.addMarker(new MarkerOptions()
-		.position(new LatLng(latitude, longitude))
+	public void addMarkerOtherUser(double latitude, double longitude, String displayname) {
+		LatLng latLng = new LatLng(latitude,longitude);
+		Marker marker = map.addMarker(new MarkerOptions()
+		.position(latLng)
 		.title(displayname));
+		currentOtherUsers.add(marker);
 	}
 
 	//Updates the database, and checks for updates on the database whenever the user moves.
 	@Override
 	public void onLocationChanged(Location arg0) {
-		getAllLocations();
 		sendMyLocation();
+		
+		// Add our current location to the map
+		if (myLocation != null) {myLocation.remove();}
+		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+		BitmapDescriptor bitmapDescriptor 
+			= BitmapDescriptorFactory.defaultMarker(
+					BitmapDescriptorFactory.HUE_AZURE);
+		myLocation = map.addMarker(new MarkerOptions()
+		.position(latLng)
+		.icon(bitmapDescriptor)
+		.title(app.getCurrentDisplayName()));
 	}
 
 
@@ -140,18 +161,22 @@ OnAddGeofencesResultListener
 	AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 		public void onSuccess(String response) {
 			JsonParser parser = new JsonParser();	
-			jsonElement = parser.parse(response);
+			JsonElement jsonElement = parser.parse(response);
 			JsonArray jsonArray = jsonElement.getAsJsonArray();
 			Iterator<JsonElement> it = jsonArray.iterator();
-
+			// We remove current markers and clear the array
+			for (Marker m : currentOtherUsers) {
+				m.remove();
+			}
+			currentOtherUsers.clear();
+			// We add the updated ones
 			while (it.hasNext()) {
 				JsonObject obj = it.next().getAsJsonObject();
 				String displayname = obj.get("displayname").getAsString();
-				Double latitude = obj.get("latitude").getAsDouble();
-				Double longitude = obj.get("longitude").getAsDouble();
-				
-				addMarker(latitude, longitude, displayname);				
-			}			
+				double latitude = obj.get("latitude").getAsDouble();
+				double longitude = obj.get("longitude").getAsDouble();
+				addMarkerOtherUser(latitude,longitude,displayname);
+			}
 		}
 
 		public void onFailure(Throwable e, String response) {
@@ -167,8 +192,7 @@ OnAddGeofencesResultListener
 	};
 	SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);	
 }
-	
-	
+
 	//METHOD FOR HANDLING MENU ITEMS
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
