@@ -151,47 +151,47 @@ OnAddGeofencesResultListener
 
 
 	//Retrieves locations of all users on the database that have been on within the past hour.
-	public void getAllLocations(){
+	public void getAllLocations() {
 		
-	JsonObject obj = new JsonObject();
-	obj.add("email", new JsonPrimitive(email));
-	obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
-	obj.add("type", new JsonPrimitive(3));
-
-	AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
-		public void onSuccess(String response) {
-			JsonParser parser = new JsonParser();	
-			JsonElement jsonElement = parser.parse(response);
-			JsonArray jsonArray = jsonElement.getAsJsonArray();
-			Iterator<JsonElement> it = jsonArray.iterator();
-			// We remove current markers and clear the array
-			for (Marker m : currentOtherUsers) {
-				m.remove();
+		JsonObject obj = new JsonObject();
+		obj.add("email", new JsonPrimitive(email));
+		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
+		obj.add("type", new JsonPrimitive(3));
+	
+		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+			public void onSuccess(String response) {
+				JsonParser parser = new JsonParser();	
+				JsonElement jsonElement = parser.parse(response);
+				JsonArray jsonArray = jsonElement.getAsJsonArray();
+				Iterator<JsonElement> it = jsonArray.iterator();
+				// We remove current markers and clear the array
+				for (Marker m : currentOtherUsers) {
+					m.remove();
+				}
+				currentOtherUsers.clear();
+				// We add the updated ones
+				while (it.hasNext()) {
+					JsonObject obj = it.next().getAsJsonObject();
+					String displayname = obj.get("displayname").getAsString();
+					double latitude = obj.get("latitude").getAsDouble();
+					double longitude = obj.get("longitude").getAsDouble();
+					addMarkerOtherUser(latitude,longitude,displayname);
+				}
 			}
-			currentOtherUsers.clear();
-			// We add the updated ones
-			while (it.hasNext()) {
-				JsonObject obj = it.next().getAsJsonObject();
-				String displayname = obj.get("displayname").getAsString();
-				double latitude = obj.get("latitude").getAsDouble();
-				double longitude = obj.get("longitude").getAsDouble();
-				addMarkerOtherUser(latitude,longitude,displayname);
+	
+			public void onFailure(Throwable e, String response) {
+				// TODO 
+				Context context = getApplicationContext();
+				CharSequence text = e.toString();
+				int duration = Toast.LENGTH_LONG;
+	
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.show();
+				sendFailureMessage(e, response);
 			}
-		}
-
-		public void onFailure(Throwable e, String response) {
-			// TODO 
-			Context context = getApplicationContext();
-			CharSequence text = e.toString();
-			int duration = Toast.LENGTH_LONG;
-
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
-			sendFailureMessage(e, response);
-		}
-	};
-	SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);	
-}
+		};
+		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);	
+	}
 
 	//METHOD FOR HANDLING MENU ITEMS
 	@Override
