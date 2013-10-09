@@ -43,10 +43,9 @@
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/new_skatespot_create"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:onClick="createNewSkatespot"
+            android:onClick="createNewSkateSpot"
             android:text="@string/new_skatespot_create" />
     </LinearLayout>
 
