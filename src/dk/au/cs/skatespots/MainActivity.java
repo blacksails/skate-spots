@@ -134,8 +134,8 @@ OnAddGeofencesResultListener
 	//Updates the database, and checks for updates on the database whenever the user moves.
 	@Override
 	public void onLocationChanged(Location arg0) {
+		app.setLocation(locationClient.getLastLocation());
 		sendMyLocation();
-		
 		// Add our current location to the map
 		if (myLocation != null) {myLocation.remove();}
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
