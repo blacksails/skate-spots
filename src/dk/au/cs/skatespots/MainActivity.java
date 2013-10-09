@@ -40,7 +40,6 @@ OnConnectionFailedListener,
 LocationListener,
 OnAddGeofencesResultListener 
 {
-	//TODO Might be missing updates on our own marker. Need to check.
 	private SkateSpots app;
 	private LocationClient locationClient;
 	private GoogleMap map;
