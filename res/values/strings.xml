@@ -7,7 +7,6 @@
     <string name="menu_create">Create new</string>
     <string name="menu_modify">Modify existing</string>
     <string name="menu_delete">Delete existing</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_login">Login to Skate Spots</string>
     <string name="enter_user_name">User name</string>
     <string name="enter_password">Password</string>
@@ -25,5 +24,11 @@
     
     <!-- Info window -->
     <string name="info_name">TEST</string>
+    <string name="title_activity_new_skate_spot">NewSkateSpot</string>
+    <string name="new_skatespot_name">Skatespottets navn</string>
+    <string name="new_skatespot_description">Beskrivelse af SkateSpottet</string>
+    <string name="new_skatespot_create">Opret SkateSpot!</string>
+    <string name="new_skatespot_type">Type:</string>
+
 
 </resources>

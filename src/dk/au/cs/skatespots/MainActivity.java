@@ -306,7 +306,7 @@ OnAddGeofencesResultListener
 			goToBluetooth();
 			return true;
 		case R.id.menu_create:
-			//TODO Specify create in the menu
+			goToCreateNew();
 			return true;
 		case R.id.menu_modify:
 			//TODO Specify modify in the menu
@@ -339,6 +339,11 @@ OnAddGeofencesResultListener
 		startActivity(intent);
 	}
 	
+	
+	private void goToCreateNew(){
+		Intent intent = new Intent(this, NewSkateSpot.class);
+		startActivity(intent);
+	}
 	
 
 	//NOT CURRENTLY USED METHODS:
