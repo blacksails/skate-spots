@@ -2,13 +2,10 @@ package dk.au.cs.skatespots;
 
 import java.util.ArrayList;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -17,6 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class NewSkateSpot extends Activity {
 	SkateSpots app;
