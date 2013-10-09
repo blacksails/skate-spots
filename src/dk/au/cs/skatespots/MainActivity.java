@@ -1,6 +1,7 @@
 package dk.au.cs.skatespots;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import android.app.Activity;
@@ -10,6 +11,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -22,6 +25,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -48,6 +53,7 @@ OnAddGeofencesResultListener
 	private String email;
 	private ArrayList<Marker> currentOtherUsers;
 	private LocationRequest locationRequest;
+	private HashMap<Marker,JsonObject> skateSpots;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,50 @@ OnAddGeofencesResultListener
 			// Check if we were successful in obtaining the map.
 			if (map != null) {
 				map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+				map.setInfoWindowAdapter(new InfoWindowAdapter() {
+
+					@Override
+					public View getInfoContents(Marker arg0) {
+						if (arg0.getTitle() == null) {
+							View v = getLayoutInflater().inflate(R.layout.info_window, null);
+							return v;
+						} else {
+							return null;
+						}
+					}
+
+					@Override
+					public View getInfoWindow(Marker arg0) {
+						// TODO Auto-generated method stub
+						return null;
+					}
+					
+				});
+				map.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+					@Override
+					public boolean onMarkerClick(Marker arg0) {
+						if (skateSpots.containsKey(arg0)) {
+							View v = getLayoutInflater().inflate(R.layout.info_window, null);
+							JsonObject obj = skateSpots.get(arg0);
+							TextView tv;
+							String name = obj.get("name").getAsString();
+							tv = (TextView) v.findViewById(R.id.info_name);
+							tv.setText(name);
+							String description = obj.get("description").getAsString();
+							tv = (TextView) v.findViewById(R.id.info_description);
+							tv.setText(description);
+							String type = obj.get("type").getAsString();
+							tv = (TextView) v.findViewById(R.id.info_type);
+							tv.setText(type);
+							String author = obj.get("author").getAsString();
+							tv = (TextView) v.findViewById(R.id.info_author);
+							tv.setText(author);
+						}
+						return false;
+					}
+					
+				});
 			}
 		}
 		if (locationClient == null) {
@@ -82,6 +132,10 @@ OnAddGeofencesResultListener
 		}
 		if (currentOtherUsers == null) {
 			currentOtherUsers = new ArrayList<Marker>();
+		}
+		if (skateSpots == null) {
+			skateSpots = new HashMap<Marker,JsonObject>();
+			getSkateSpots();
 		}
 	}
 
@@ -191,6 +245,51 @@ OnAddGeofencesResultListener
 			}
 		};
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);	
+	}
+	
+	private void getSkateSpots() {
+		
+		JsonObject obj = new JsonObject();
+		obj.add("email", new JsonPrimitive(email));
+		obj.add("key", new JsonPrimitive("ourKey"));
+		obj.add("type", new JsonPrimitive(5));
+		
+		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+			public void onSuccess(String response) {
+				JsonParser parser = new JsonParser();
+				JsonElement jsonElement = parser.parse(response);
+				JsonArray jsonArray = jsonElement.getAsJsonArray();
+				Iterator<JsonElement> it = jsonArray.iterator();
+				while (it.hasNext()) {
+					JsonObject obj = it.next().getAsJsonObject();
+					String type = obj.get("type").getAsString();
+					double latitude = obj.get("latitude").getAsDouble();
+					double longitude = obj.get("longitude").getAsDouble();
+					
+					BitmapDescriptor bitmapDescriptor;
+					if (type.equals("street")) {
+						bitmapDescriptor 
+						= BitmapDescriptorFactory.defaultMarker(
+								BitmapDescriptorFactory.HUE_GREEN);
+					} else if (type.equals("park")) {
+						bitmapDescriptor 
+						= BitmapDescriptorFactory.defaultMarker(
+								BitmapDescriptorFactory.HUE_GREEN);
+					} else { // type.equals("indoor")
+						bitmapDescriptor 
+						= BitmapDescriptorFactory.defaultMarker(
+								BitmapDescriptorFactory.HUE_GREEN);
+					}
+					
+					Marker marker = map.addMarker(new MarkerOptions()
+					.position(new LatLng(latitude,longitude))
+					.icon(bitmapDescriptor));
+					skateSpots.put(marker, obj);
+					
+				}
+			}
+		};
+		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
 	}
 
 	//METHOD FOR HANDLING MENU ITEMS
