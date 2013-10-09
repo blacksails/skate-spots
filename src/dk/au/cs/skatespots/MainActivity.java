@@ -135,7 +135,7 @@ OnAddGeofencesResultListener
 		}
 		if (skateSpots == null) {
 			skateSpots = new HashMap<Marker,JsonObject>();
-			getSkateSpots();
+			//getSkateSpots();
 		}
 	}
 

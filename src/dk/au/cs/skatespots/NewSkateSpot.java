@@ -1,16 +1,16 @@
 package dk.au.cs.skatespots;
 
 import java.util.ArrayList;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
-import com.loopj.android.http.AsyncHttpResponseHandler;
+import java.util.List;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -20,13 +20,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class NewSkateSpot extends Activity {
 	SkateSpots app;
-
+	JsonArray wifiArray = new JsonArray();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,6 +58,9 @@ public class NewSkateSpot extends Activity {
 	}
 
 	public void createNewSkateSpot(View view){
+		//Finds the author of the SkateSpot
+		String author = app.getCurrentUser();
+
 		//Finds the name of the SkateSpot
 		EditText skatespot_name = (EditText) findViewById(R.id.new_skatespot_name);
 		String name = skatespot_name.getText().toString();
@@ -72,15 +78,23 @@ public class NewSkateSpot extends Activity {
 		double latitude = loc.getLatitude();
 		double longitude = loc.getLongitude();
 
+		//Finds WiFi networks around the user, and adds them to an array.
+		findWifiNearby();
+
+		
+		//Adds needed elements to JsonObject
 		JsonObject obj = new JsonObject();
 		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
 		obj.add("type", new JsonPrimitive(4));
 		obj.add("name", new JsonPrimitive(name));
+		obj.add("author", new JsonPrimitive(author));
 		obj.add("description", new JsonPrimitive(description));
 		obj.add("spottype", new JsonPrimitive(type));
 		obj.add("latitude", new JsonPrimitive(latitude));
 		obj.add("longitude", new JsonPrimitive(longitude));
+		obj.add("wifi", wifiArray);
 
+		//Creates response for the server
 		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(String response) {				
@@ -117,4 +131,29 @@ public class NewSkateSpot extends Activity {
 		startActivity(intent);
 	}
 
+	private void findWifiNearby(){
+		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
+			public void onReceive(Context c, Intent i){
+				WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+				//Listen over netværk
+				List<ScanResult> scanResults = wifiManager.getScanResults();
+
+				//Tilføjer vores devices pr. navn og addresse til vores ListView gennem vores arrayAdapter.
+				for(ScanResult s : scanResults){
+					String wifiName = s.SSID;
+					JsonElement jsonElement = new JsonPrimitive(wifiName);
+					wifiArray.add(jsonElement);
+				}
+			}
+		};	
+
+		IntentFilter intentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+		registerReceiver(broadcastReceiver, intentFilter);
+
+		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		//Sets the android's WiFi options to enabled.
+		wifiManager.setWifiEnabled(true);
+		wifiManager.startScan();
+	}
 }
+
