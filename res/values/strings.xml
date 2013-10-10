@@ -32,12 +32,14 @@
 
     <!-- Info window -->
     <string name="window_name">Name: </string>
-    <string name="window_type">Type: </string>
+    <string name="window_type">Spot type: </string>
     <string name="window_author">Author: </string>
-    <string name="window_reminder">Click the field to create reminder!</string>
+    <string name="window_reminder">Tap this window to toggle reminder!</string>
     <string name="title_activity_modify_skate_spots">ModifySkateSpots</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_delete_reminders">DeleteReminders</string>
+    
+    <string name="create_skatespot">Create Skatespot</string>
 
 </resources>
 

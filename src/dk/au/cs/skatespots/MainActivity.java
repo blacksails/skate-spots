@@ -108,6 +108,13 @@ OnAddGeofencesResultListener
 							String author = obj.get("author").getAsString();
 							tv = (TextView) v.findViewById(R.id.info_author);
 							tv.setText(author);
+							
+							tv = (TextView) v.findViewById(R.id.window_setText);
+							if (!app.getCurrentSReminders().contains(skateSpots.get(arg0).get("id").getAsInt())) {
+								tv.setText("Reminder is disabled!");
+							} else {
+								tv.setText("Reminder is enabled!");
+							}
 							return v;
 						} else {
 							return null;
@@ -127,12 +134,14 @@ OnAddGeofencesResultListener
 					@Override
 					public void onInfoWindowClick(Marker arg0) {
 						if (arg0.getTitle() == null) {
-							if (!app.getCurrentWifi().contains(skateSpots.get(arg0).get("id").getAsInt())) {
+							if (!app.getCurrentSReminders().contains(skateSpots.get(arg0).get("id").getAsInt())) {
 								newSkateSpotReminder(skateSpots.get(arg0));
 								app.getCurrentSReminders().add(skateSpots.get(arg0).get("id").getAsInt());
 							} else {
 								removeSkateSpotReminder(skateSpots.get(arg0));
+								app.getCurrentSReminders().remove(skateSpots.get(arg0).get("id").getAsInt());
 							}
+							arg0.showInfoWindow();
 						} else {
 							// newPersonReminder
 						}
@@ -387,7 +396,7 @@ OnAddGeofencesResultListener
 				while (ssids.hasNext()) {
 					if (wifi.contains(ssids.next().getAsString())) {
 						Context context = getApplicationContext();
-						CharSequence text = "REMINDER: You are close to the skatespot "+skateSpot.get("name").getAsString();
+						CharSequence text = "You are close to the skatespot "+skateSpot.get("name").getAsString()+", you should really go check it out!";
 						int duration = Toast.LENGTH_LONG;
 
 						Toast toast = Toast.makeText(context, text, duration);
@@ -407,11 +416,8 @@ OnAddGeofencesResultListener
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.menu_create:
+		case R.id.create_skatespot:
 			goToCreateNew();
-			return true;
-		case R.id.menu_modify:
-			//TODO Specify modify in the menu
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
