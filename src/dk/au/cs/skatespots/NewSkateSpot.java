@@ -12,6 +12,7 @@ import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -117,6 +118,8 @@ public class NewSkateSpot extends Activity {
 				Context context = getApplicationContext();
 				CharSequence text = "Failed to create a new Skatespot";
 				int duration = Toast.LENGTH_LONG;
+				
+				Log.w("onFailure", error.fillInStackTrace());
 
 				Toast toast = Toast.makeText(context, text, duration);
 				toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -135,10 +138,10 @@ public class NewSkateSpot extends Activity {
 		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
 			public void onReceive(Context c, Intent i){
 				WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
-				//Listen over netværk
+				//Listen over netvï¿½rk
 				List<ScanResult> scanResults = wifiManager.getScanResults();
 
-				//Tilføjer vores devices pr. navn og addresse til vores ListView gennem vores arrayAdapter.
+				//Tilfï¿½jer vores devices pr. navn og addresse til vores ListView gennem vores arrayAdapter.
 				for(ScanResult s : scanResults){
 					String wifiName = s.SSID;
 					JsonElement jsonElement = new JsonPrimitive(wifiName);
