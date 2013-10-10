@@ -58,9 +58,12 @@ OnAddGeofencesResultListener
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		app = (SkateSpots) this.getApplication();
 		setContentView(R.layout.activity_main);
 		setUpStuffIfNeeded();
 		email = app.getCurrentUser();
+		currentOtherUsers = new ArrayList<Marker>();
+		skateSpots = new HashMap<Marker,JsonObject>();
 	}
 
 
@@ -123,31 +126,23 @@ OnAddGeofencesResultListener
 				});
 			}
 		}
-		if (locationClient == null) {
-			locationClient = new LocationClient(this,this,this);
-			locationClient.connect();
-			if (locationRequest == null) {
-				locationRequest = LocationRequest.create();
-				locationRequest.setInterval(5000);
-				locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-			}
+		
+		if (app.getLocationClient() != null && app.getLocationClient().isConnected()) {
+			app.getLocationClient().disconnect();
 		}
-		if (app == null) {
-			app = (SkateSpots) this.getApplication();
-		}
-		if (currentOtherUsers == null) {
-			currentOtherUsers = new ArrayList<Marker>();
-		}
-		if (skateSpots == null) {
-			skateSpots = new HashMap<Marker,JsonObject>();
-			//getSkateSpots();
-		}
+		locationClient = new LocationClient(this,this,this);
+		app.setLocationClient(locationClient);
+		locationClient.connect();
 	}
 
 
 	@Override
 	public void onConnected(Bundle arg0) {
 		location = locationClient.getLastLocation();
+		
+		locationRequest = LocationRequest.create();
+		locationRequest.setInterval(5000);
+		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 		locationClient.requestLocationUpdates(locationRequest, this);
 		
 		//Zooms in on our current position

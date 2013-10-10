@@ -3,10 +3,14 @@ package dk.au.cs.skatespots;
 import android.app.Application;
 import android.location.Location;
 
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationRequest;
+
 public class SkateSpots extends Application {
 	private String currentUser;
 	private String currentDisplayName;
 	private Location location;
+	private LocationClient locationClient;
 	
 	public String getCurrentUser() {
 		return currentUser;
@@ -30,5 +34,13 @@ public class SkateSpots extends Application {
 
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+
+	public LocationClient getLocationClient() {
+		return locationClient;
+	}
+
+	public void setLocationClient(LocationClient locationClient) {
+		this.locationClient = locationClient;
 	}
 }
