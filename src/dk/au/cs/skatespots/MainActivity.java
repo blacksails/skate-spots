@@ -16,7 +16,6 @@ import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -128,7 +127,12 @@ OnAddGeofencesResultListener
 					@Override
 					public void onInfoWindowClick(Marker arg0) {
 						if (arg0.getTitle() == null) {
-							newSkateSpotReminder(skateSpots.get(arg0));
+							if (!app.getCurrentWifi().contains(skateSpots.get(arg0).get("id").getAsInt())) {
+								newSkateSpotReminder(skateSpots.get(arg0));
+								app.getCurrentSReminders().add(skateSpots.get(arg0).get("id").getAsInt());
+							} else {
+								removeSkateSpotReminder(skateSpots.get(arg0));
+							}
 						} else {
 							// newPersonReminder
 						}
@@ -336,6 +340,16 @@ OnAddGeofencesResultListener
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
 	}
 
+	private void removeSkateSpotReminder(JsonObject jsonObject) {
+		JsonObject obj = new JsonObject();
+		obj.add("id", jsonObject.get("id"));
+		obj.add("email", new JsonPrimitive(email));
+		obj.add("key", new JsonPrimitive("ourKey"));
+		obj.add("type", new JsonPrimitive(8));
+		
+		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler();
+		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
+	}
 
 	private void findNearbyWifi(){
 		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
@@ -399,10 +413,6 @@ OnAddGeofencesResultListener
 		case R.id.menu_modify:
 			//TODO Specify modify in the menu
 			return true;
-		case R.id.menu_delete:
-			goToDelete();
-			//TODO Specify delete in the menu
-			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -412,11 +422,6 @@ OnAddGeofencesResultListener
 	// Methods for activity changing
 	private void goToCreateNew(){
 		Intent intent = new Intent(this, NewSkateSpot.class);
-		startActivity(intent);
-	}
-
-	private void goToDelete(){
-		Intent intent = new Intent(this, DeleteReminders.class);
 		startActivity(intent);
 	}
 
