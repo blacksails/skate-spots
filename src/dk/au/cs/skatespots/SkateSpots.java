@@ -63,8 +63,8 @@ public class SkateSpots extends Application {
 		return currentSkateSpots;
 	}
 
-	public void setCurrentSkateSpots(HashMap<Integer,JsonObject> currentSReminders) {
-		this.currentSkateSpots = currentSReminders;
+	public void setCurrentSkateSpots(HashMap<Integer,JsonObject> currentSkateSpots) {
+		this.currentSkateSpots = currentSkateSpots;
 	}
 
 	public HashSet<Integer> getCurrentSReminders() {

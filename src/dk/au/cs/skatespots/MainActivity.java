@@ -16,6 +16,7 @@ import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -119,7 +120,7 @@ OnAddGeofencesResultListener
 						// TODO Auto-generated method stub
 						return null;
 					}
-					
+
 				});
 				
 				map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
@@ -132,11 +133,11 @@ OnAddGeofencesResultListener
 							// newPersonReminder
 						}
 					}
-					
+
 				});
 			}
 		}
-		
+
 		if (app.getLocationClient() != null && app.getLocationClient().isConnected()) {
 			app.getLocationClient().disconnect();
 		}
@@ -149,12 +150,12 @@ OnAddGeofencesResultListener
 	@Override
 	public void onConnected(Bundle arg0) {
 		location = locationClient.getLastLocation();
-		
+
 		locationRequest = LocationRequest.create();
 		locationRequest.setInterval(5000);
 		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 		locationClient.requestLocationUpdates(locationRequest, this);
-		
+
 		//Zooms in on our current position
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
@@ -167,19 +168,20 @@ OnAddGeofencesResultListener
 	public void onLocationChanged(Location arg0) {
 		// Keep the global var updated
 		app.setLocation(locationClient.getLastLocation());
-		
+
 		sendMyLocation();
 		getAllLocations();
 		findNearbyWifi();
 		getSkateSpots();
 		getReminders();
+		//reminderCheck();
 		
 		// Add our current location to the map
 		if (myLocation != null) {myLocation.remove();}
 		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 		BitmapDescriptor bitmapDescriptor 
-			= BitmapDescriptorFactory.defaultMarker(
-					BitmapDescriptorFactory.HUE_AZURE);
+		= BitmapDescriptorFactory.defaultMarker(
+				BitmapDescriptorFactory.HUE_AZURE);
 		myLocation = map.addMarker(new MarkerOptions()
 		.position(latLng)
 		.icon(bitmapDescriptor)
@@ -206,12 +208,12 @@ OnAddGeofencesResultListener
 
 	//Retrieves locations of all users on the database that have been on within the past hour.
 	private void getAllLocations() {
-		
+
 		JsonObject obj = new JsonObject();
 		obj.add("email", new JsonPrimitive(email));
 		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
 		obj.add("type", new JsonPrimitive(3));
-	
+
 		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 			public void onSuccess(String response) {
 				JsonParser parser = new JsonParser();	
@@ -236,13 +238,13 @@ OnAddGeofencesResultListener
 					currentOtherUsers.add(marker);
 				}
 			}
-	
+
 			public void onFailure(Throwable e, String response) {
 				// TODO 
 				Context context = getApplicationContext();
 				CharSequence text = e.toString();
 				int duration = Toast.LENGTH_LONG;
-	
+
 				Toast toast = Toast.makeText(context, text, duration);
 				toast.show();
 				sendFailureMessage(e, response);
@@ -253,12 +255,12 @@ OnAddGeofencesResultListener
 	
 	@SuppressLint("UseSparseArrays")
 	private void getSkateSpots() {
-		
+
 		JsonObject obj = new JsonObject();
 		obj.add("email", new JsonPrimitive(email));
 		obj.add("key", new JsonPrimitive("ourKey"));
 		obj.add("type", new JsonPrimitive(5));
-		
+
 		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 			public void onSuccess(String response) {
 				JsonParser parser = new JsonParser();
@@ -268,11 +270,11 @@ OnAddGeofencesResultListener
 				Iterator<JsonElement> it = jsonArray.iterator();
 				while (it.hasNext()) {
 					JsonObject obj = it.next().getAsJsonObject();
-					
+
 					String spottype = obj.get("spottype").getAsString();
 					double latitude = obj.get("latitude").getAsDouble();
 					double longitude = obj.get("longitude").getAsDouble();
-					
+
 					BitmapDescriptor bitmapDescriptor;
 					if (spottype.equals("street")) {
 						bitmapDescriptor 
@@ -287,7 +289,7 @@ OnAddGeofencesResultListener
 						= BitmapDescriptorFactory.defaultMarker(
 								BitmapDescriptorFactory.HUE_GREEN);
 					}
-					
+
 					Marker marker = map.addMarker(new MarkerOptions()
 					.position(new LatLng(latitude,longitude))
 					.icon(bitmapDescriptor));
@@ -346,7 +348,7 @@ OnAddGeofencesResultListener
 					String wifiName = s.BSSID;
 					wifiArray.add(new JsonPrimitive(wifiName));
 				}
-				
+
 				app.setCurrentWifi(wifiArray);
 			}
 		};	
@@ -359,7 +361,42 @@ OnAddGeofencesResultListener
 		wifiManager.setWifiEnabled(true);
 		wifiManager.startScan();	
 	}
-	
+
+	private void reminderCheck(){
+		Iterator<JsonElement> innerIt = app.getCurrentWifi().iterator();
+		Iterator<Integer> it = app.getCurrentSReminders().iterator();
+		HashMap<Integer, JsonObject> currentSkateSpots = app.getCurrentSkateSpots();
+
+		while(it.hasNext()){
+			int intReminder = it.next();
+			JsonObject objReminder = currentSkateSpots.get(intReminder); //I HASHSETTET
+			JsonArray jsonArray = objReminder.get("wifi").getAsJsonArray();
+			Iterator<JsonElement> middleIt = jsonArray.iterator();
+
+			while(middleIt.hasNext()){
+				String reminderWifi = middleIt.next().getAsString();
+
+				while(innerIt.hasNext()){
+					JsonObject innerObj = innerIt.next().getAsJsonObject();
+					String skateSpotWifiName = innerObj.get("wifi").getAsString();
+
+					if(reminderWifi == skateSpotWifiName){
+						Context context = getApplicationContext();
+						CharSequence text = "REMINDER: You are close to a SkateSpot!";
+						int duration = Toast.LENGTH_LONG;
+
+						Toast toast = Toast.makeText(context, text, duration);
+						toast.show();
+					}
+					else{
+						continue;
+					}	
+				}	
+			}
+		}
+	}
+
+
 	//METHOD FOR HANDLING MENU ITEMS
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -372,6 +409,7 @@ OnAddGeofencesResultListener
 			//TODO Specify modify in the menu
 			return true;
 		case R.id.menu_delete:
+			goToDelete();
 			//TODO Specify delete in the menu
 			return true;
 		default:
@@ -383,6 +421,11 @@ OnAddGeofencesResultListener
 	// Methods for activity changing
 	private void goToCreateNew(){
 		Intent intent = new Intent(this, NewSkateSpot.class);
+		startActivity(intent);
+	}
+
+	private void goToDelete(){
+		Intent intent = new Intent(this, DeleteReminders.class);
 		startActivity(intent);
 	}
 
@@ -400,7 +443,7 @@ OnAddGeofencesResultListener
 	@Override
 	public void onAddGeofencesResult(int arg0, String[] arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 

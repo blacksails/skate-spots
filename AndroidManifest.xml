@@ -73,6 +73,14 @@
             android:name="dk.au.cs.skatespots.NewSkateSpot"
             android:label="@string/title_activity_new_skate_spot" >
         </activity>
+        <activity
+            android:name="dk.au.cs.skatespots.ModifySkateSpots"
+            android:label="@string/title_activity_modify_skate_spots" >
+        </activity>
+        <activity
+            android:name="dk.au.cs.skatespots.DeleteReminders"
+            android:label="@string/title_activity_delete_reminders" >
+        </activity>
     </application>
 
 </manifest>
