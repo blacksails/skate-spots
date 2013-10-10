@@ -7,17 +7,16 @@ import android.app.Application;
 import android.location.Location;
 
 import com.google.android.gms.location.LocationClient;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class SkateSpots extends Application {
 	private String currentUser;
 	private String currentDisplayName;
 	private Location location;
-	private LocationClient locationClient;
-	private JsonArray currentWifi;
+	private LocationClient locationClient;;
 	private HashMap<Integer,JsonObject> currentSkateSpots;
 	private HashSet<Integer> currentSReminders;
+	private HashSet<String> currentWifi;
 	
 	public String getCurrentUser() {
 		return currentUser;
@@ -51,14 +50,6 @@ public class SkateSpots extends Application {
 		this.locationClient = locationClient;
 	}
 
-	public JsonArray getCurrentWifi() {
-		return currentWifi;
-	}
-
-	public void setCurrentWifi(JsonArray currentWifi) {
-		this.currentWifi = currentWifi;
-	}
-
 	public HashMap<Integer,JsonObject> getCurrentSkateSpots() {
 		return currentSkateSpots;
 	}
@@ -73,5 +64,13 @@ public class SkateSpots extends Application {
 
 	public void setCurrentSReminders(HashSet<Integer> currentSReminders) {
 		this.currentSReminders = currentSReminders;
+	}
+
+	public HashSet<String> getCurrentWifi() {
+		return currentWifi;
+	}
+
+	public void setCurrentWifi(HashSet<String> currentWifi) {
+		this.currentWifi = currentWifi;
 	}
 }

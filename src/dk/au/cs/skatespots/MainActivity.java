@@ -174,7 +174,7 @@ OnAddGeofencesResultListener
 		findNearbyWifi();
 		getSkateSpots();
 		getReminders();
-		//reminderCheck();
+		reminderCheck();
 		
 		// Add our current location to the map
 		if (myLocation != null) {myLocation.remove();}
@@ -340,16 +340,16 @@ OnAddGeofencesResultListener
 	private void findNearbyWifi(){
 		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
 			public void onReceive(Context c, Intent i){
-				JsonArray wifiArray = new JsonArray();
+				HashSet<String> wifiSet = new HashSet<String>();
 				WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
 				List<ScanResult> scanResults = wifiManager.getScanResults();
 
 				for(ScanResult s : scanResults){
 					String wifiName = s.BSSID;
-					wifiArray.add(new JsonPrimitive(wifiName));
+					wifiSet.add(wifiName);
 				}
 
-				app.setCurrentWifi(wifiArray);
+				app.setCurrentWifi(wifiSet);
 			}
 		};	
 
@@ -363,36 +363,27 @@ OnAddGeofencesResultListener
 	}
 
 	private void reminderCheck(){
-		Iterator<JsonElement> innerIt = app.getCurrentWifi().iterator();
-		Iterator<Integer> it = app.getCurrentSReminders().iterator();
-		HashMap<Integer, JsonObject> currentSkateSpots = app.getCurrentSkateSpots();
-
-		while(it.hasNext()){
-			int intReminder = it.next();
-			JsonObject objReminder = currentSkateSpots.get(intReminder); //I HASHSETTET
-			JsonArray jsonArray = objReminder.get("wifi").getAsJsonArray();
-			Iterator<JsonElement> middleIt = jsonArray.iterator();
-
-			while(middleIt.hasNext()){
-				String reminderWifi = middleIt.next().getAsString();
-
-				while(innerIt.hasNext()){
-					JsonObject innerObj = innerIt.next().getAsJsonObject();
-					String skateSpotWifiName = innerObj.get("wifi").getAsString();
-
-					if(reminderWifi == skateSpotWifiName){
+		if (app.getCurrentWifi() != null || app.getCurrentSkateSpots() != null || app.getCurrentSReminders() != null) {
+			HashSet<String> wifi = app.getCurrentWifi();
+			HashMap<Integer,JsonObject> skateSpots = app.getCurrentSkateSpots();
+			HashSet<Integer> reminders = app.getCurrentSReminders();
+			for (Integer i : reminders) {
+				JsonObject skateSpot = skateSpots.get(i);
+				Iterator<JsonElement> ssids = skateSpot.get("wifi").getAsJsonArray().iterator(); 
+				while (ssids.hasNext()) {
+					if (wifi.contains(ssids.next().getAsString())) {
 						Context context = getApplicationContext();
-						CharSequence text = "REMINDER: You are close to a SkateSpot!";
+						CharSequence text = "REMINDER: You are close to the skatespot "+skateSpot.get("name").getAsString();
 						int duration = Toast.LENGTH_LONG;
 
 						Toast toast = Toast.makeText(context, text, duration);
 						toast.show();
+						return;
 					}
-					else{
-						continue;
-					}	
-				}	
+				}
 			}
+		} else {
+			return;
 		}
 	}
 

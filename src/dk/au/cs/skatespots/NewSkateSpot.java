@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -81,7 +82,11 @@ public class NewSkateSpot extends Activity {
 		obj.add("spottype", new JsonPrimitive(type));
 		obj.add("latitude", new JsonPrimitive(latitude));
 		obj.add("longitude", new JsonPrimitive(longitude));
-		obj.add("wifi", app.getCurrentWifi());
+		JsonArray wifi = new JsonArray();
+		for (String s : app.getCurrentWifi()) {
+			wifi.add(new JsonPrimitive(s));
+		}
+		obj.add("wifi", wifi);
 		
 		Log.w("WIFIARRAY", "FØR ARRAY");
 		
