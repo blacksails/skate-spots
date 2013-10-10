@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -33,7 +34,7 @@ public class Bluetooth extends Activity {
 	}
 
 	public void getBluetoothDevices(){
-				
+
 		bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		pairedDevices = bluetoothAdapter.getBondedDevices();
 		arrayAdapter =  new ArrayAdapter<String>(this, R.layout.simplerow);
@@ -58,14 +59,19 @@ public class Bluetooth extends Activity {
 					//Tilføjer alle bluetoothDevices til listen bluetoothDevices.
 					bluetoothDevices.add(device);
 				}
+				else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action))
+				{
+					Log.v("Bluetooth","Discovering for 12 seconds");
+					bluetoothAdapter.startDiscovery();
+				}	
+
 			}
 		};
-		
+
 		IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		registerReceiver(broadcastReceiver, intentFilter); // Don't forget to unregister during onDestroy
-
+		
 		bluetoothAdapter.startDiscovery();
 
-		//Mangler måske at implementere metoder til onPause og onResume for broadcastReciever? Samme gælder i Wifi.
 	}
 }

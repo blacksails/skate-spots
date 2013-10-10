@@ -4,12 +4,14 @@ import android.app.Application;
 import android.location.Location;
 
 import com.google.android.gms.location.LocationClient;
+import com.google.gson.JsonArray;
 
 public class SkateSpots extends Application {
 	private String currentUser;
 	private String currentDisplayName;
 	private Location location;
 	private LocationClient locationClient;
+	private JsonArray currentWifi;
 	
 	public String getCurrentUser() {
 		return currentUser;
@@ -41,5 +43,13 @@ public class SkateSpots extends Application {
 
 	public void setLocationClient(LocationClient locationClient) {
 		this.locationClient = locationClient;
+	}
+
+	public JsonArray getCurrentWifi() {
+		return currentWifi;
+	}
+
+	public void setCurrentWifi(JsonArray currentWifi) {
+		this.currentWifi = currentWifi;
 	}
 }

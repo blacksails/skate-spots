@@ -3,11 +3,16 @@ package dk.au.cs.skatespots;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,6 +59,7 @@ OnAddGeofencesResultListener
 	private ArrayList<Marker> currentOtherUsers;
 	private LocationRequest locationRequest;
 	private HashMap<Marker,JsonObject> skateSpots;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -195,6 +201,7 @@ OnAddGeofencesResultListener
 		.icon(bitmapDescriptor)
 		.title(app.getCurrentDisplayName()));
 		getAllLocations();
+		findNearbyWifi();
 	}
 
 
@@ -291,14 +298,6 @@ OnAddGeofencesResultListener
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.wifi_and_bluetooth:
-			return true;
-		case R.id.wifi:
-			goToWifi();
-			return true;
-		case R.id.bluetooth:
-			goToBluetooth();
-			return true;
 		case R.id.menu_create:
 			goToCreateNew();
 			return true;
@@ -308,22 +307,35 @@ OnAddGeofencesResultListener
 		case R.id.menu_delete:
 			//TODO Specify delete in the menu
 			return true;
-		case R.id.action_settings:
-			createUserActivity();
-			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
-	private void goToBluetooth() {
-		Intent intent = new Intent(this, Bluetooth.class);
-		startActivity(intent);
-	}
 	
-	private void goToWifi() {
-		Intent intent = new Intent(this, Wifi.class);
-		startActivity(intent);
+	private void findNearbyWifi(){
+		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
+			public void onReceive(Context c, Intent i){
+				JsonArray wifiArray = new JsonArray();
+				WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+				List<ScanResult> scanResults = wifiManager.getScanResults();
+
+				for(ScanResult s : scanResults){
+					String wifiName = s.BSSID;
+					wifiArray.add(new JsonPrimitive(wifiName));
+				}
+				
+				app.setCurrentWifi(wifiArray);
+			}
+		};	
+
+		IntentFilter intentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+		registerReceiver(broadcastReceiver, intentFilter);
+
+		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		//Sets the android's WiFi options to enabled.
+		wifiManager.setWifiEnabled(true);
+		wifiManager.startScan();	
 	}
 	
 	

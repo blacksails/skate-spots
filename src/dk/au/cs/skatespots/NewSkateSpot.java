@@ -1,6 +1,7 @@
 package dk.au.cs.skatespots;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import android.app.Activity;
@@ -29,7 +30,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class NewSkateSpot extends Activity {
 	SkateSpots app;
-	JsonArray wifiArray = new JsonArray();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +78,7 @@ public class NewSkateSpot extends Activity {
 		Location loc = app.getLocation();
 		double latitude = loc.getLatitude();
 		double longitude = loc.getLongitude();
-
-		//Finds WiFi networks around the user, and adds them to an array.
-		findWifiNearby();
-
-		
+	
 		//Adds needed elements to JsonObject
 		JsonObject obj = new JsonObject();
 		obj.add("key", new JsonPrimitive("ourKey")); // TODO create a secret key
@@ -93,8 +89,11 @@ public class NewSkateSpot extends Activity {
 		obj.add("spottype", new JsonPrimitive(type));
 		obj.add("latitude", new JsonPrimitive(latitude));
 		obj.add("longitude", new JsonPrimitive(longitude));
-		obj.add("wifi", wifiArray);
-
+		obj.add("wifi", app.getCurrentWifi());
+		
+		Log.w("WIFIARRAY", "FØR ARRAY");
+		
+		
 		//Creates response for the server
 		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
 			@Override
@@ -132,31 +131,6 @@ public class NewSkateSpot extends Activity {
 	private void mainActivity() {
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
-	}
-
-	private void findWifiNearby(){
-		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
-			public void onReceive(Context c, Intent i){
-				WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
-				//Listen over netv�rk
-				List<ScanResult> scanResults = wifiManager.getScanResults();
-
-				//Tilf�jer vores devices pr. navn og addresse til vores ListView gennem vores arrayAdapter.
-				for(ScanResult s : scanResults){
-					String wifiName = s.SSID;
-					JsonElement jsonElement = new JsonPrimitive(wifiName);
-					wifiArray.add(jsonElement);
-				}
-			}
-		};	
-
-		IntentFilter intentFilter = new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-		registerReceiver(broadcastReceiver, intentFilter);
-
-		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		//Sets the android's WiFi options to enabled.
-		wifiManager.setWifiEnabled(true);
-		wifiManager.startScan();
 	}
 }
 
