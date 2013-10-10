@@ -32,7 +32,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -91,7 +91,7 @@ OnAddGeofencesResultListener
 
 					@Override
 					public View getInfoContents(Marker arg0) {
-						if (arg0.getTitle() == null) {
+						if (arg0.getTitle() == null) { // means this is a skatespot and not a user
 							View v = getLayoutInflater().inflate(R.layout.info_window, null);
 							JsonObject obj = skateSpots.get(arg0);
 							TextView tv;
@@ -120,11 +120,16 @@ OnAddGeofencesResultListener
 					}
 					
 				});
-				map.setOnMarkerClickListener(new OnMarkerClickListener() {
+				
+				map.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
 
 					@Override
-					public boolean onMarkerClick(Marker arg0) {
-						return false;
+					public void onInfoWindowClick(Marker arg0) {
+						if (arg0.getTitle() == null) {
+							newSkateSpotReminder(skateSpots.get(arg0));
+						} else {
+							// newPersonReminder
+						}
 					}
 					
 				});
@@ -288,6 +293,18 @@ OnAddGeofencesResultListener
 				}
 			}
 		};
+		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
+	}
+	
+	private void newSkateSpotReminder(JsonObject skateSpot) {
+		
+		JsonObject obj = new JsonObject();
+		obj.add("id", skateSpot.get("id"));
+		obj.add("email", new JsonPrimitive(email));
+		obj.add("key", new JsonPrimitive("ourKey"));
+		obj.add("type", new JsonPrimitive(6));
+		
+		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler();
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
 	}
 
