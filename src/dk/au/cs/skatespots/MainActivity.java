@@ -2,9 +2,11 @@ package dk.au.cs.skatespots;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,7 +16,6 @@ import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -171,6 +172,7 @@ OnAddGeofencesResultListener
 		getAllLocations();
 		findNearbyWifi();
 		getSkateSpots();
+		getReminders();
 		
 		// Add our current location to the map
 		if (myLocation != null) {myLocation.remove();}
@@ -249,6 +251,7 @@ OnAddGeofencesResultListener
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);	
 	}
 	
+	@SuppressLint("UseSparseArrays")
 	private void getSkateSpots() {
 		
 		JsonObject obj = new JsonObject();
@@ -261,7 +264,7 @@ OnAddGeofencesResultListener
 				JsonParser parser = new JsonParser();
 				JsonElement jsonElement = parser.parse(response);
 				JsonArray jsonArray = jsonElement.getAsJsonArray();
-				Log.w("SKATESPOT", ""+jsonArray.size());
+				HashMap<Integer,JsonObject> currentSkateSpots = new HashMap<Integer,JsonObject>();
 				Iterator<JsonElement> it = jsonArray.iterator();
 				while (it.hasNext()) {
 					JsonObject obj = it.next().getAsJsonObject();
@@ -289,8 +292,9 @@ OnAddGeofencesResultListener
 					.position(new LatLng(latitude,longitude))
 					.icon(bitmapDescriptor));
 					skateSpots.put(marker, obj);
-					
+					currentSkateSpots.put(obj.get("id").getAsInt(), obj);
 				}
+				app.setCurrentSkateSpots(currentSkateSpots);
 			}
 		};
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
@@ -307,6 +311,29 @@ OnAddGeofencesResultListener
 		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler();
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
 	}
+
+	private void getReminders() {
+		JsonObject obj = new JsonObject();
+		obj.add("email", new JsonPrimitive(email));
+		obj.add("key", new JsonPrimitive("ourKey"));
+		obj.add("type", new JsonPrimitive(7));
+		
+		AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler(){
+			public void onSuccess(String response) {
+				JsonParser parser = new JsonParser();
+				JsonArray jsonArray = parser.parse(response).getAsJsonArray();
+				HashSet<Integer> currentSReminders = new HashSet<Integer>();
+				Iterator<JsonElement> it = jsonArray.iterator();
+				while (it.hasNext()) {
+					Integer id = it.next().getAsInt();
+					currentSReminders.add(id);
+				}
+				app.setCurrentSReminders(currentSReminders);
+			}
+		};
+		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
+	}
+
 
 	private void findNearbyWifi(){
 		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){

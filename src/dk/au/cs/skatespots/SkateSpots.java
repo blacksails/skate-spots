@@ -1,10 +1,14 @@
 package dk.au.cs.skatespots;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 import android.app.Application;
 import android.location.Location;
 
 import com.google.android.gms.location.LocationClient;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class SkateSpots extends Application {
 	private String currentUser;
@@ -12,6 +16,8 @@ public class SkateSpots extends Application {
 	private Location location;
 	private LocationClient locationClient;
 	private JsonArray currentWifi;
+	private HashMap<Integer,JsonObject> currentSkateSpots;
+	private HashSet<Integer> currentSReminders;
 	
 	public String getCurrentUser() {
 		return currentUser;
@@ -51,5 +57,21 @@ public class SkateSpots extends Application {
 
 	public void setCurrentWifi(JsonArray currentWifi) {
 		this.currentWifi = currentWifi;
+	}
+
+	public HashMap<Integer,JsonObject> getCurrentSkateSpots() {
+		return currentSkateSpots;
+	}
+
+	public void setCurrentSkateSpots(HashMap<Integer,JsonObject> currentSReminders) {
+		this.currentSkateSpots = currentSReminders;
+	}
+
+	public HashSet<Integer> getCurrentSReminders() {
+		return currentSReminders;
+	}
+
+	public void setCurrentSReminders(HashSet<Integer> currentSReminders) {
+		this.currentSReminders = currentSReminders;
 	}
 }
