@@ -4,7 +4,6 @@ import android.app.Application;
 import android.location.Location;
 
 import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationRequest;
 
 public class SkateSpots extends Application {
 	private String currentUser;
