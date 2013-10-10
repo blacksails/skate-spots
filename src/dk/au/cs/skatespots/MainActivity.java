@@ -158,7 +158,30 @@ OnAddGeofencesResultListener
 	}
 
 
-	public void sendMyLocation(){
+	//Updates the database, and checks for updates on the database whenever the user moves.
+	@Override
+	public void onLocationChanged(Location arg0) {
+		// Keep the global var updated
+		app.setLocation(locationClient.getLastLocation());
+		
+		sendMyLocation();
+		getAllLocations();
+		findNearbyWifi();
+		
+		// Add our current location to the map
+		if (myLocation != null) {myLocation.remove();}
+		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+		BitmapDescriptor bitmapDescriptor 
+			= BitmapDescriptorFactory.defaultMarker(
+					BitmapDescriptorFactory.HUE_AZURE);
+		myLocation = map.addMarker(new MarkerOptions()
+		.position(latLng)
+		.icon(bitmapDescriptor)
+		.title(app.getCurrentDisplayName()));
+	}
+
+
+	private void sendMyLocation(){
 		location = locationClient.getLastLocation();
 
 		double latitude = location.getLatitude();
@@ -175,38 +198,8 @@ OnAddGeofencesResultListener
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
 	}
 
-	
-	//Takes a location and displayname as input, and puts a marker down for that.
-	public void addMarkerOtherUser(double latitude, double longitude, String displayname) {
-		LatLng latLng = new LatLng(latitude,longitude);
-		Marker marker = map.addMarker(new MarkerOptions()
-		.position(latLng)
-		.title(displayname));
-		currentOtherUsers.add(marker);
-	}
-
-	//Updates the database, and checks for updates on the database whenever the user moves.
-	@Override
-	public void onLocationChanged(Location arg0) {
-		app.setLocation(locationClient.getLastLocation());
-		sendMyLocation();
-		// Add our current location to the map
-		if (myLocation != null) {myLocation.remove();}
-		LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-		BitmapDescriptor bitmapDescriptor 
-			= BitmapDescriptorFactory.defaultMarker(
-					BitmapDescriptorFactory.HUE_AZURE);
-		myLocation = map.addMarker(new MarkerOptions()
-		.position(latLng)
-		.icon(bitmapDescriptor)
-		.title(app.getCurrentDisplayName()));
-		getAllLocations();
-		findNearbyWifi();
-	}
-
-
 	//Retrieves locations of all users on the database that have been on within the past hour.
-	public void getAllLocations() {
+	private void getAllLocations() {
 		
 		JsonObject obj = new JsonObject();
 		obj.add("email", new JsonPrimitive(email));
@@ -230,7 +223,11 @@ OnAddGeofencesResultListener
 					String displayname = obj.get("displayname").getAsString();
 					double latitude = obj.get("latitude").getAsDouble();
 					double longitude = obj.get("longitude").getAsDouble();
-					addMarkerOtherUser(latitude,longitude,displayname);
+					LatLng latLng = new LatLng(latitude,longitude);
+					Marker marker = map.addMarker(new MarkerOptions()
+					.position(latLng)
+					.title(displayname));
+					currentOtherUsers.add(marker);
 				}
 			}
 	
@@ -293,26 +290,6 @@ OnAddGeofencesResultListener
 		SkateSpotsHttpClient.post(getApplicationContext(), obj, responseHandler);
 	}
 
-	//METHOD FOR HANDLING MENU ITEMS
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		switch (item.getItemId()) {
-		case R.id.menu_create:
-			goToCreateNew();
-			return true;
-		case R.id.menu_modify:
-			//TODO Specify modify in the menu
-			return true;
-		case R.id.menu_delete:
-			//TODO Specify delete in the menu
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	
 	private void findNearbyWifi(){
 		final BroadcastReceiver broadcastReceiver = new BroadcastReceiver(){
 			public void onReceive(Context c, Intent i){
@@ -338,19 +315,31 @@ OnAddGeofencesResultListener
 		wifiManager.startScan();	
 	}
 	
-	
-	//FOR TESTING PURPOSES: SEE onOptionsItemSelected -> Action_settings
-	private void createUserActivity() {
-		Intent intent = new Intent(this, CreateUserActivity.class);
-		startActivity(intent);
+	//METHOD FOR HANDLING MENU ITEMS
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.menu_create:
+			goToCreateNew();
+			return true;
+		case R.id.menu_modify:
+			//TODO Specify modify in the menu
+			return true;
+		case R.id.menu_delete:
+			//TODO Specify delete in the menu
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
-	
-	
+
+
+	// Methods for activity changing
 	private void goToCreateNew(){
 		Intent intent = new Intent(this, NewSkateSpot.class);
 		startActivity(intent);
 	}
-	
 
 	//NOT CURRENTLY USED METHODS:
 	@Override

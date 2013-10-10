@@ -1,17 +1,11 @@
 package dk.au.cs.skatespots;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.Location;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,8 +16,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.loopj.android.http.AsyncHttpResponseHandler;
