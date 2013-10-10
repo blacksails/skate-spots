@@ -14,6 +14,7 @@ import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -92,6 +93,20 @@ OnAddGeofencesResultListener
 					public View getInfoContents(Marker arg0) {
 						if (arg0.getTitle() == null) {
 							View v = getLayoutInflater().inflate(R.layout.info_window, null);
+							JsonObject obj = skateSpots.get(arg0);
+							TextView tv;
+							String name = obj.get("name").getAsString();
+							tv = (TextView) v.findViewById(R.id.info_name);
+							tv.setText(name);
+							String description = obj.get("description").getAsString();
+							tv = (TextView) v.findViewById(R.id.info_description);
+							tv.setText(description);
+							String spottype = obj.get("spottype").getAsString();
+							tv = (TextView) v.findViewById(R.id.info_type);
+							tv.setText(spottype);
+							String author = obj.get("author").getAsString();
+							tv = (TextView) v.findViewById(R.id.info_author);
+							tv.setText(author);
 							return v;
 						} else {
 							return null;
@@ -109,23 +124,6 @@ OnAddGeofencesResultListener
 
 					@Override
 					public boolean onMarkerClick(Marker arg0) {
-						if (skateSpots.containsKey(arg0)) {
-							View v = getLayoutInflater().inflate(R.layout.info_window, null);
-							JsonObject obj = skateSpots.get(arg0);
-							TextView tv;
-							String name = obj.get("name").getAsString();
-							tv = (TextView) v.findViewById(R.id.info_name);
-							tv.setText(name);
-							String description = obj.get("description").getAsString();
-							tv = (TextView) v.findViewById(R.id.info_description);
-							tv.setText(description);
-							String type = obj.get("type").getAsString();
-							tv = (TextView) v.findViewById(R.id.info_type);
-							tv.setText(type);
-							String author = obj.get("author").getAsString();
-							tv = (TextView) v.findViewById(R.id.info_author);
-							tv.setText(author);
-						}
 						return false;
 					}
 					
@@ -167,6 +165,7 @@ OnAddGeofencesResultListener
 		sendMyLocation();
 		getAllLocations();
 		findNearbyWifi();
+		getSkateSpots();
 		
 		// Add our current location to the map
 		if (myLocation != null) {myLocation.remove();}
@@ -257,19 +256,21 @@ OnAddGeofencesResultListener
 				JsonParser parser = new JsonParser();
 				JsonElement jsonElement = parser.parse(response);
 				JsonArray jsonArray = jsonElement.getAsJsonArray();
+				Log.w("SKATESPOT", ""+jsonArray.size());
 				Iterator<JsonElement> it = jsonArray.iterator();
 				while (it.hasNext()) {
 					JsonObject obj = it.next().getAsJsonObject();
-					String type = obj.get("type").getAsString();
+					
+					String spottype = obj.get("spottype").getAsString();
 					double latitude = obj.get("latitude").getAsDouble();
 					double longitude = obj.get("longitude").getAsDouble();
 					
 					BitmapDescriptor bitmapDescriptor;
-					if (type.equals("street")) {
+					if (spottype.equals("street")) {
 						bitmapDescriptor 
 						= BitmapDescriptorFactory.defaultMarker(
 								BitmapDescriptorFactory.HUE_GREEN);
-					} else if (type.equals("park")) {
+					} else if (spottype.equals("park")) {
 						bitmapDescriptor 
 						= BitmapDescriptorFactory.defaultMarker(
 								BitmapDescriptorFactory.HUE_GREEN);
