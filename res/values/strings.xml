@@ -21,14 +21,23 @@
     <string name="bluetooth">Bluetooth</string>
     <string name="title_activity_bluetooth">Bluetooth</string>
     <string name="title_activity_wifi">Wifi</string>
-    
-    <!-- Info window -->
-    <string name="info_name">TEST</string>
     <string name="title_activity_new_skate_spot">NewSkateSpot</string>
+    <string name="delete_reminder">Click to delete a reminder</string>
+
+    <!-- Creating new SkateSpot -->
     <string name="new_skatespot_name">Skatespottets navn</string>
     <string name="new_skatespot_description">Beskrivelse af SkateSpottet</string>
     <string name="new_skatespot_create">Opret SkateSpot!</string>
     <string name="new_skatespot_type">Type:</string>
 
+    <!-- Info window -->
+    <string name="window_name">Name: </string>
+    <string name="window_type">Type: </string>
+    <string name="window_author">Author: </string>
+    <string name="window_reminder">Click the field to create reminder!</string>
+    <string name="title_activity_modify_skate_spots">ModifySkateSpots</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_delete_reminders">DeleteReminders</string>
 
 </resources>
+
